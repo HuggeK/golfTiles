@@ -37,9 +37,10 @@ title: Plan for generating the PMtiles
 ---
 ```mermaid
 flowchart LR
-   download(Download extracts of OpenStreetMap data) --> tagfilter(Use Osmium tag filter to get all golf courses)  --> osmiumGeographicExtract(run a Osmium geographic extract for all features inside all these polygons) --> Planetiler(use the proccesed osm opf extract to generate PMTiles using Planetiler) --> upload[(Optionaly upload the PMTiles using protomaps/go-pmtiles to a Cloudflare R2 S3-like bucket.)]
+   download(Download extracts of OpenStreetMap data) --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons)  --> osmiumExportPolygons(Using Osmium export with the filterted obf file from the previous step. ) --> osmiumGeographicExtract(run osmium-extract on the original extract, only exporting data inside of the GEOJSON produced in the previous step.) --> Planetiler(use the proccesed osm opf extract to generate PMTiles using Planetiler) --> upload[(Optionaly upload the PMTiles using protomaps/go-pmtiles to a Cloudflare R2 S3-like bucket.)]
 click download "https://switch2osm.org/serving-tiles/#System-requirements"
 click tagfilter "https://docs.osmcode.org/osmium/latest/osmium-tags-filter.html"
+click osmiumExportPolygons "https://docs.osmcode.org/osmium/latest/osmium-export.html"
 click osmiumGeographicExtract "https://docs.osmcode.org/osmium/latest/osmium-extract.html"
 click Planetiler "https://github.com/openmaptiles/openmaptiles"
 click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
