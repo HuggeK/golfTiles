@@ -1,0 +1,1 @@
+osmium export -v --geometry-types=polygon golfcourse.sweden.osm.pbf --output=golffacilities.geojson

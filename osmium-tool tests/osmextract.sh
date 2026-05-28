@@ -1,0 +1,1 @@
+osmium extract -v -O --polygon=golfcourse.sweden.osm.pbf --strategy=complete_ways --output=leisuregolfcoursesobjects.sweden.osm.pbf sweden-260526.osm.pbf

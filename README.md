@@ -29,6 +29,14 @@ The workflow using the Martin tilegenerator would may be more efficient with a f
 Other future endeavours could also be to explore the new [MapLibre Tile (MLT)](https://github.com/maplibre/maplibre-tile-spec) to encode the DEM data from [Mapterhorn](https://mapterhorn.com/) directly into the tile. 
 
 
+# First test:
+
+I created a tag filter with the ways and relations with the leisure=golf_course, using the geojson did not work in using it with the extract command, but my fast look at the geojsons it looks like it can detect it so that was a good sanity-check that the tag-filter was succesfull when opening it in QGIS. 
+I then used the extract command with the tag filtered pbf file which was 618 kb. I first used the smart strategy, but that looks like it includes way to much data outside of the facilities. I then switched back to the complete_ways strategy and on the complete sweden export it took: 
+```[ 0:09] Peak memory used: 4713 MBytes``` when running the Osmium-tool inside of WSL 2 on a Ubuntu 26.04 OS. The resulting file pbf was: ```6 279kb``` for Sweden.
+
+
+
 # Help wanted!
 If you know something about tile generation or nothing at all, this project will be Open Source, so anyone is welcome to contribute to it!
 
@@ -37,10 +45,9 @@ title: Plan for generating the PMtiles
 ---
 ```mermaid
 flowchart LR
-   download(Download extracts of OpenStreetMap data) --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons)  --> osmiumExportPolygons(Using Osmium export with the filterted obf file from the previous step. ) --> osmiumGeographicExtract(run osmium-extract on the original extract, only exporting data inside of the GEOJSON produced in the previous step.) --> Planetiler(use the proccesed osm opf extract to generate PMTiles using Planetiler) --> upload[(Optionaly upload the PMTiles using protomaps/go-pmtiles to a Cloudflare R2 S3-like bucket.)]
+   download(Download extracts of OpenStreetMap data) --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons) --> osmiumGeographicExtract(run osmium-extract on the original extract, only exporting data inside of the GEOJSON produced in the previous step.) --> Planetiler(use the proccesed osm opf extract to generate PMTiles using Planetiler) --> upload[(Optionaly upload the PMTiles using protomaps/go-pmtiles to a Cloudflare R2 S3-like bucket.)]
 click download "https://switch2osm.org/serving-tiles/#System-requirements"
 click tagfilter "https://docs.osmcode.org/osmium/latest/osmium-tags-filter.html"
-click osmiumExportPolygons "https://docs.osmcode.org/osmium/latest/osmium-export.html"
 click osmiumGeographicExtract "https://docs.osmcode.org/osmium/latest/osmium-extract.html"
 click Planetiler "https://github.com/openmaptiles/openmaptiles"
 click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
