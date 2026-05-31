@@ -54,6 +54,16 @@ I then used the extract command with the tag filtered pbf file which was 618 kb.
 
 I was able to generate some PMtiles using the default OpenMapTiles schema which is included in the tileMaker repository.
 
+
+# How to run
+
+Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [source](https://github.com/systemed/tilemaker/tree/master). Download a planet [extract .pbf file](https://switch2osm.org/serving-tiles/#System-requirements). Then run 
+1. ```osmium tags-filter``` as seen in [osmium-tool/osmiumtagfilter1.sh](osmium-tool/osmiumtagfilter1.sh). 
+2. ```osmium extract``` as seen in [osmium-tool/osmiumextract2.sh](osmium-tool/osmiumextract2.sh)
+3. then run tilemaker as seen in [tilemaker/tilemaker.sh](tilemaker/tilemaker.sh) with the [tilemaker/config.json](tilemaker/config.json) and [tilemaker/process.lua](tilemaker/process.lua) as parameters.  Optionally add the store location to allow tilemaker to use ssd as swap space instead of running all in RAM. 
+4. You should now have your PMtiles file which you can server with any web server which support [HTTP Range Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests). More information in the Protomaps Docs regarding [Cloud Storage for PMtiles](https://docs.protomaps.com/pmtiles/cloud-storage).
+
+
 # Next step:
 - [ ] Write the .json for configuring the layers for tileMaker. My initial though is to put all golf features into one layer with no cut-offs for zoom. When viewing a golf course you are viewing the course at zoom level 14+ anyways.
 - [ ] Write the procces.lua for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server like the mentioned above.
@@ -77,4 +87,5 @@ I would need help in any of the following areas:
 - [ ] Serving tiles using this tileserver.
 - or if you have something else you want to help out with, just drop an issue or submit a pull request.
 
+You can start and look at the [tilemaker/process.lua](tilemaker/process.lua) for what keys and improve it by adding more keys and logic you can find inside of a [Tag:leisure=golf_course](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course)
 

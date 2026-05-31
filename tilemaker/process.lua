@@ -22,6 +22,30 @@
 ]]--
 
 
+-- Add the route=golf type=route relations for the golf courses, as documented in: https://wiki.openstreetmap.org/wiki/Tag:route%3Dgolf
+
+-- TODO write this that it could both be mapped as per hole with name and also as a route=golf and still output the same type as navigatable vector tiles?
+-- This navigation logic is maybe better handled by these app as a separate overpass instance to query the relationships? 
+-- But the good things about having it in the tiles is that we can style and animate on it?
+
+-- TODO plan: Embedd the course route=golf relation id on the applicable golf=holes. and the relations
+-- OR add it ass attributes (= vector tile metadata/tags)
+
+function relation_scan_function()
+  if Find("type")=="route" and Find("route")=="golf" then
+		Accept() 
+  end
+end
+
+
+
+
+-- MAYBE verify ref= order here in this code as sanity check? Or maybe not.
+
+
+
+
+
 -- Nodes will only be processed if one of these keys is present
 
 node_keys = { "amenity", "historic", "leisure", "place", "shop", "tourism" }
