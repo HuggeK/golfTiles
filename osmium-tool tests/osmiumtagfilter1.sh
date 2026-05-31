@@ -1,1 +1,1 @@
-osmium tags-filter -v --output=golfcourse.sweden.osm.pbf sweden-260526.osm.pbf wr/leisure=golf_course
+osmium tags-filter -v --output=golfcourse.tagfilter.osm.pbf sweden-260526.osm.pbf wr/leisure=golf_course

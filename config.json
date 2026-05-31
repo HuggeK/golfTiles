@@ -1,0 +1,14 @@
+{
+	"layers": {
+		"golf":               { "minzoom":  0, "maxzoom": 14 }
+	},
+	"settings": {
+		"minzoom": 4,
+		"maxzoom": 14,
+		"basezoom": 14,
+		"include_ids": false,
+		"name": "Golf tiles Tilemaker",
+		"version": "0.1",
+		"description": "Tiles for features inside of golf_courses "
+	}
+}

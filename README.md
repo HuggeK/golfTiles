@@ -72,6 +72,9 @@ I would need help in any of the following areas:
 - [ ] Writing more on the process.lua to pick out what features could occur inside of a golf course facility.,
 - [ ] Writing a Maplibre GL style for the tiles.
 - [ ] Writing a basic course viewer using some web framework togheter with Maplibre GL JS. Especially intresting would be to consume the route=golf data in the tiles to be able to chose as particular course and animate through it when the facility have more than one course.
+- [ ] Import golf features into PostGIS database,
+- [ ] Generate features on the fly using this PostGIS database. 
+- [ ] Serving tiles using this tileserver.
 - or if you have something else you want to help out with, just drop an issue or submit a pull request.
 
 
