@@ -1,11 +1,6 @@
 --[[
 
-	TODO write more about it here:
-
 	The attribute "kind" refers to the "main" attribute as of golfTiles standard.
-
-	A simple example tilemaker configuration, intended to illustrate how it
-	works and to act as a starting point for your own configurations.
 
 	The basic principle is:
 	- read OSM tags with Find(key)
@@ -14,25 +9,11 @@
 
 ]]--
 
-
--- Add the route=golf type=route relations for the golf courses, as documented in: https://wiki.openstreetmap.org/wiki/Tag:route%3Dgolf
-
--- TODO write this that it could both be mapped as per hole with name and also as a route=golf and still output the same type as navigatable vector tiles?
--- This navigation logic is maybe better handled by these app as a separate overpass instance to query the relationships? 
--- But the good things about having it in the tiles is that we can style and animate on it?
-
--- TODO plan: Embedd the course route=golf relation id on the applicable golf=holes. and the relations
--- OR add it ass attributes (= vector tile metadata/tags)
-
 function relation_scan_function()
   if Find("type")=="route" and Find("route")=="golf" then
 		Accept() 
   end
 end
-
-
-
--- MAYBE verify ref= order here in this code as sanity check? Or maybe not.
 
 
 -- FROM TEMPLATE Nodes will only be processed if one of these keys is present
@@ -68,12 +49,6 @@ function node_function(node)
 		Layer("golf")
 		Attribute("kind", find("information")) 
 	end
-	local amenity = Find("amenity") -- Mainly for amenity=bench
-	if amenity~="" then 
-		Layer("golf")
-		Attribute("kind", find("information")) 
-	end
-
 
 	-- Points go to a "other" layer
 	-- Features which can be all around the course but is not only found on the course itself.
@@ -81,18 +56,37 @@ function node_function(node)
 	local man_made= Find("man_made") -- Mainly for man_made=water_tap 
 	if man_made~="" then
 		Layer("other")
-		if amenity~="" then Attribute("kind",amenity)
-		else Attribute("class",shop) end
-		Attribute("name:latin", Find("name"))
-		AttributeInteger("rank", 3)
+		Attribute("kind", find("man_made")) 
 	end
 
 	-- add golf shops, the shop at the Masters etc.
-
+	-- TODO add more info here if it exist, opening hours contact details etc.
+	-- could AllTags() be used to apply them all?
+	local shop = Find("shop") 
+	if shop~="" then
+		Layer("other")
+		Attribute("kind", Find("shop"))
+		Attribute("name", Find("name"))
+	end
 end
 
+-- list of possible keys or key-value pairs to speed up/use less memory:
+-- way_keys = {} 
 
 -- Assign ways to a layer, and set attributes, based on OSM tags
+
+
+-- Add the route=golf type=route relations for the golf courses, as documented in: https://wiki.openstreetmap.org/wiki/Tag:route%3Dgolf
+
+-- TODO write this that it could both be mapped as per hole with name and also as a route=golf and still output the same type as navigatable vector tiles?
+-- This navigation logic is maybe better handled by these app as a separate overpass instance to query the relationships? 
+-- But the good things about having it in the tiles is that we can style and animate on it?
+
+-- TODO plan: Embedd the course route=golf relation id on the applicable golf=holes. and the relations
+-- OR add it ass attributes (= vector tile metadata/tags)
+
+-- MAYBE verify ref= order here in this code as sanity check? Or maybe not.
+
 
 function way_function()
 	local highway  = Find("highway")
