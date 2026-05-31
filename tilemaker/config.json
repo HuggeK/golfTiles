@@ -1,14 +1,21 @@
 {
 	"layers": {
-		"golf":               { "minzoom":  0, "maxzoom": 14 }
+		"golf":               { "minzoom":  0, "maxzoom": 14 },
+		"other":               { "minzoom":  0, "maxzoom": 14 }
 	},
 	"settings": {
 		"minzoom": 4,
 		"maxzoom": 14,
 		"basezoom": 14,
-		"include_ids": false,
+		"include_ids": true,
 		"name": "Golf tiles Tilemaker",
 		"version": "0.1",
-		"description": "Tiles for features inside of golf_courses "
+		"description": "Tiles for features inside of golf_courses ",
+		"metadata": {
+			"author": "Someone using the huggek/golfTiles schema. ",
+			"licence": "ODbL 1.1 © OpenStreetMap contributors. golfTiles",
+			"layer_order": { "golf": 1, "other": 2}
+		}
 	}
+
 }

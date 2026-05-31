@@ -1,5 +1,9 @@
 --[[
 
+	TODO write more about it here:
+
+	The attribute "kind" refers to the "main" attribute as of golfTiles standard.
+
 	A simple example tilemaker configuration, intended to illustrate how it
 	works and to act as a starting point for your own configurations.
 
@@ -7,17 +11,6 @@
 	- read OSM tags with Find(key)
 	- write to vector tile layers with Layer(layer_name)
 	- add attributes with Attribute(field, value)
-
-	(This is a very basic subset of the OpenMapTiles schema. Don't take much 
-	notice of the "class" attribute, that's an OMT implementation thing which 
-	is just here to get them to show up with the default style.)
-
-	It doesn't do much filtering by zoom level - all the roads appear all the
-	time. If you want a practice project, try fixing that!
-
-	You can view your output with tilemaker-server:
-
-	tilemaker-server /path/to/your.mbtiles --static server/static
 
 ]]--
 
@@ -39,49 +32,63 @@ end
 
 
 
-
 -- MAYBE verify ref= order here in this code as sanity check? Or maybe not.
 
 
-
-
-
--- Nodes will only be processed if one of these keys is present
-
-node_keys = { "amenity", "historic", "leisure", "place", "shop", "tourism" }
+-- FROM TEMPLATE Nodes will only be processed if one of these keys is present
+-- This reduces momory drasticly.
+node_keys = { "golf", "man_made", "shop", "amenity", "natural", "tourism", "information"} 
 
 
 -- Assign nodes to a layer, and set attributes, based on OSM tags
-
 function node_function(node)
-	-- POIs go to a "poi" layer (we just look for amenity and shop here)
-	local amenity = Find("amenity")
-	local shop = Find("shop")
-	if amenity~="" or shop~="" then
-		Layer("poi")
-		if amenity~="" then Attribute("class",amenity)
+	-- TODO rewrite this logic, its only one node per function call. 
+	-- so if a particular node have been checked - do not check anything else - or does it auto-return?
+
+
+	-- Points to go to a "golf" layer
+	-- Features on the course itself.
+	local golf = Find("golf")
+	if golf~="" then
+		Layer("golf")
+		Attribute("kind", find("golf")) -- the attribute kind refers to the "main" attribute.
+	end
+	local natural = Find("natural") -- mainly for natural=tree
+	if natural~="" then
+		Layer("golf")
+		Attribute("kind", find("natural")) 
+	end
+	local information = Find("information") -- Mainly for information=guideposts and other signs on the course.
+	if information~="" then --TODO is add the descriptions and the destinations for these signs.
+		Layer("golf")
+		Attribute("kind", find("information")) 
+	end
+	local amenity = Find("amenity") -- Mainly for amenity=bench
+	if amenity~="" then 
+		Layer("golf")
+		Attribute("kind", find("information")) 
+	end
+	local amenity = Find("amenity") -- Mainly for amenity=bench
+	if amenity~="" then 
+		Layer("golf")
+		Attribute("kind", find("information")) 
+	end
+
+
+	-- Points go to a "other" layer
+	-- Features which can be all around the course but is not only found on the course itself.
+
+	local man_made= Find("man_made") -- Mainly for man_made=water_tap 
+	if man_made~="" then
+		Layer("other")
+		if amenity~="" then Attribute("kind",amenity)
 		else Attribute("class",shop) end
 		Attribute("name:latin", Find("name"))
 		AttributeInteger("rank", 3)
 	end
-	
-	-- Places go to a "place" layer
-	local place = Find("place")
-	if place~="" then
-		Layer("place")
-		Attribute("class", place)
-		Attribute("name:latin", Find("name"))
-		if place=="city" then
-			AttributeInteger("rank", 4)
-			MinZoom(3)
-		elseif place=="town" then
-			AttributeInteger("rank", 6)
-			MinZoom(6)
-		else
-			AttributeInteger("rank", 9)
-			MinZoom(10)
-		end
-	end
+
+	-- add golf shops, the shop at the Masters etc.
+
 end
 
 
@@ -91,6 +98,16 @@ function way_function()
 	local highway  = Find("highway")
 	local waterway = Find("waterway")
 	local building = Find("building")
+
+--[[ 	-- cover natural:sand and surface=sand also for waste areas and trees etc.
+	local natural = Find("natural")
+	if natural~="" then
+		Layer("golf")
+		Attribute("kind", find("natural"))
+	
+	end  ]]
+
+
 
 	-- Roads
 	if highway~="" then
