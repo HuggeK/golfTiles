@@ -60,10 +60,11 @@ Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [s
 # Next steps:
 - [ ] Write the basics of ```procces.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
 - [ ] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
-- [ ] optimize the generation, sort the id´s with ```osmium renumber``` and tilemakers ```--compact```
-- [ ] put up finished PMtiles on golftiles.org
+- [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemakers ```--compact```
+- [ ] Put up finished PMtiles on golftiles.org
 - [ ] Write the style.
-- [ ] generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. 
+- [ ] Generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. 
+- [ ] If the size of the tiles is to large for my small web host, move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles. All free when the amount of requests is <10 Million each month.
 - [ ] Make a demo on [golftiles.org](http://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combinining it with some other general vector tiles for location purposes in a mapblire layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
 - [ ] Add [Mapterhorn](https://mapterhorn.com/) pmtiles as DEM data to the demo viewer.
 - [ ] add tilemaker as a git submodule to this project.
