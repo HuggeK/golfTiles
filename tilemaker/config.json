@@ -13,7 +13,7 @@
 		"description": "Tiles for features inside of golf_courses ",
 		"metadata": {
 			"author": "Someone using the huggek/golfTiles schema. ",
-			"licence": "ODbL 1.1 © OpenStreetMap contributors. golfTiles",
+			"licence": "Data under ODbL 1.1 © OpenStreetMap contributors. Style and vector schema golfTiles.org",
 			"layer_order": { "golf": 1, "other": 2}
 		}
 	}

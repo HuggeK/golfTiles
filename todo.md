@@ -5,3 +5,4 @@ After development is done, maybe remove the "include_ids": true, to reduce tile 
 
 Document the tile schema just like shortbread does it, via some github pages to publish it.
 
+sort the id´s from osmium and use the option in tilmaker to reduce memory usage.
