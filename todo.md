@@ -9,6 +9,14 @@ sort the id´s from osmium and use the option in tilmaker to reduce memory usage
 
 Add shrubs etc?
 
+Add Wheelchair acces info as generic attributes for all nodes and or ways and polygons.
+
+
+
+Make more layers, golf for golf centric features, others for others to use the facility and some other hierachy?
+
+TODO document the architect tag for a whole course and also individual courses.
+
 
 # Regarding the course information:
 -- Add the route=golf type=route relations for the golf courses, as documented in: https://wiki.openstreetmap.org/wiki/Tag:route%3Dgolf
