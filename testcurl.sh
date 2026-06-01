@@ -1,0 +1,1 @@
+curl -I -A TileTest/1.0 https://golftiles.org/swedenTestGolfTiles.pmtiles

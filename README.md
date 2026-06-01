@@ -63,7 +63,9 @@ Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [s
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemakers ```--compact```
 - [ ] Put up finished PMtiles on [golftiles.org](https://golftiles.org/)
 - [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages! Documenting the "kind" attribute and other mappings to OSM keys and tags.
+- [ ] Gather icons and typeface for the style.
 - [ ] Write the style.
+- [ ] Make a vector logo for the project.
 - [ ] Generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. 
 - [ ] If the size of the tiles is to large for my small web host, move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles. All free when the amount of requests is <10 Million each month.
 - [ ] Make a demo on [golftiles.org](https://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combinining it with some other general vector tiles for location purposes in a mapblire layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
