@@ -21,7 +21,6 @@ function get_architect()
 	if architect ~="" then
 		Attribute("architect", architect)
 	end
-
 end 
 
 -- general tags - both applicable on nodes and ways/areas. Shared between node_function() and way_function()
@@ -76,43 +75,50 @@ end
 
 
 -- Nodes will only be processed if one of these keys is present. This reduces momory drasticly as stated by the documentation.
-node_keys = { "golf", "man_made", "shop", "amenity", "vending", "natural", "tourism", "information", "leaf_cycle", "leaf_type", "leisure" } 
--- Does using this strip all other keys too? Like is leaf_cycle needed and so on? Is the name key needed for example?
--- TODO UPDATE all used keys with the used keys below:
+node_keys = { "golf", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
+				"male", "female", "unisex", "toilets", "emergency", "man_made", "shop"," name", "leisure",
+				"tourism", "entrance", "operator", "opening_hours", "wikidata", "phone", "website",
+				"addr:postcode", "addr:city", "addr:street", "access" } 
 
 -- Assign nodes to a layer, and set attributes, based on OSM tags
 function node_function(node)
-	-- TODO rewrite this logic, its only one node per function call no need for too many evalutions.
+	-- TODO rewrite this logic, its only one node per function call no need for too many evalutions? Or the interpreter fixes it?
 
-	-- Points to go to a "golf" layer. Features on the course itself.
+	-- Points to go to the "golf" layer. Features on the course itself.
 	local golf = Find("golf")
 	if golf~="" then
 		Layer("golf") -- This is what actually puts it in the tile. Remember: First layer and then attributes.
-		Attribute("golf", find("golf")) -- key=value pairs.
+		Attribute("golf", golf) -- key=value pairs.
 	end
 	local natural = Find("natural") -- mainly for natural=tree
 	if natural~="" then
 		Layer("golf")
-		Attribute("golf", find("natural")) 
+		Attribute("natural", natural) 
 		-- Adds tree information:
-		if  find("natural")=="tree" then
-			if Find(key) == "leaf_cycle" then
-				Attribute("leaf_cycle", Find("leaf_cycle"))
+		if natural=="tree" then
+			local leaf_cycle = Find("leaf_cycle")
+			if leaf_cycle == "leaf_cycle" then
+				Attribute("leaf_cycle", leaf_cycle)
 			end
-			if Find(key) == "leaf_type" then
-				Attribute("leaf_type", Find("leaf_type"))
+			local leaf_type = Find("leaf_type")
+			if leaf_type == "leaf_type" then
+				Attribute("leaf_type", leaf_type)
 			end
-	end
+		--TODO could be to add height= and width=
+	ends
+	-- Add signs and signposts:
 	local information = Find("information") -- Mainly for information=guideposts and other signs on the course.
-	if information~="" then --TODO is add the descriptions and the destinations for these signs.
+	if information~="" then
 		Layer("golf")
-		Attribute("information", Find("information")) 
+		Attribute("information", information) 
+		 --TODO is add the descriptions and the destinations for these signs.
 	end
-	local amenity = Find("amenity") -- Mainly for amenity=bench
+	-- Add amenity nodes:
+	local amenity = Find("amenity") -- Mainly for amenity=bench and trashcans.
 	if amenity~="" then  -- All amenity-tags.
 		Layer("golf")
-		Attribute("amenity", Find("amenity")) 
-		-- amenity=vending_machine logic, vending=golf_balls added.
+		Attribute("amenity", amenity) 
+		-- amenity=vending_machine logic, vending=golf_balls
 		if amenity=="vending_machine" then
 			local vending = Find("vending")
 			if vending~="" then
@@ -144,7 +150,6 @@ function node_function(node)
 	end 
 
 	-- Add AED´s:
-
 	local emergency = Find("emergency"):
 	if emergency == "defibrillator":
 		Layer("golf")
@@ -159,15 +164,15 @@ function node_function(node)
 	local man_made= Find("man_made") -- Mainly for man_made=water_tap 
 	if man_made~="" then
 		Layer("other")
-		Attribute("man_made", Find("man_made")) 
+		Attribute("man_made", man_made) 
 	end
 
 	-- add golf shops, the shop at the Masters etc.
 	local shop = Find("shop") 
 	if shop~="" then
 		Layer("other")
-		Attribute("shop", Find("shop"))
-		Attribute("name", Find("name"))
+		Attribute("shop", shop)
+		Attribute("name", Find("name")) -- asume all shops have name.
 	end
 
 	-- Leisure-pois: (For example, leisure=firepit)

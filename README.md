@@ -15,12 +15,12 @@ My plan is to devlop:
 - Process scripts for featurs wich can be found inside of a (multi)polygons that is leisure=golf_course.
 - A Maplibre GL Style for maplibre GL JS. 
 - A collection of tools and instructions how to generate your own golf centric golf tiles. 
-- (Maybe depending on the cost) host the PMtiles on Cloudflare R2 S3 bucket through the [golftiles.org](https://golftiles.org/) domain. 
+- (Maybe depending on the cost) host the PMtiles on a Cloudflare R2 S3 bucket through the [golftiles.org](https://golftiles.org/) domain. 
 
 My initial plan is to produce PMtiles to avoid having to run a tile server to reduce cost for the inital step. When a style and almost complete vector schema is in place, we can then move on to create a dynamic tile server to serve atleast daily updated tiles to encourage mappers.
 
 # Previous discussion and questions on forums:
-- Question about to be able to fallback to general purpose tileset for orientation to the golf courses on OSM US Slack: https://osmus.slack.com/archives/C03TFH5NE83/p1779814786461319 Using one for an basemap and one for an overlay.
+- Question about to be able to fallback to general purpose tileset for orientation to the golf courses on OSM US Slack: https://osmus.slack.com/archives/C03TFH5NE83/p1779814786461319 Using one for basemap and our golfTiles for overlay.
 - Good feedback from the #developer channel in the OpenStreetMap Discord on how to make the export and filtering: [link](https://discord.com/channels/413070382636072960/607265062322700308/1508868644770283601)
 - Tips from utidjinn, having a similair goal on the [OSM US slack #golf channel](https://osmus.slack.com/archives/CU8J8335X/p1780070298248989?thread_ts=1779912821.021149&cid=CU8J8335X)
 
@@ -39,11 +39,8 @@ click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
 ```
 
 ## Development:
-I created a tag filter with the ways and relations with the leisure=golf_course, using the geojson did not work in using it with the extract command, but my fast look at the geojsons it looks like it can detect it so that was a good sanity-check that the tag-filter was succesfull when opening it in QGIS. So I did not use the export to geojson, but just used the two files.
-I then used the extract command with the tag filtered pbf file which was 618 kb. I first used the smart strategy, but that looks like it includes way to much data outside of the facilities. I then switched back to the complete_ways strategy and on the complete sweden export it took: 
+I created a tag filter with the ways and relations with the leisure=golf_course, using the geojson did not work in using it with the extract command, but my fast look at the geojsons it looks like it can detect it so that was a good sanity-check that the tag-filter was succesfull when opening it in QGIS. So I did not use the export to geojson, but just used the two files. I was able to generate some PMtiles using the default OpenMapTiles schema which is included in the tileMaker repository. I then used the extract command with the tag filtered pbf file which was 618 kb. I first used the smart strategy, but that looks like it includes way to much data outside of the facilities. I then switched back to the complete_ways strategy and on the complete sweden export it took: 
 ```[ 0:09] Peak memory used: 4713 MBytes``` when running the Osmium-tool inside of WSL 2 on a Ubuntu 26.04 OS. The resulting file pbf was: ```6 279kb``` for Sweden. See the shell scripts in the repo.
-
-I was able to generate some PMtiles using the default OpenMapTiles schema which is included in the tileMaker repository.
 
 - [X] Wrote the .json for configuring the layers for tileMaker. My initial though is to put all golf features into one layer with no cut-offs for zoom. When viewing a golf course you are viewing the course at zoom level 14+ anyways.
 
@@ -53,16 +50,17 @@ I was able to generate some PMtiles using the default OpenMapTiles schema which 
 Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [source](https://github.com/systemed/tilemaker/tree/master). Download a planet [extract .pbf file](https://switch2osm.org/serving-tiles/#System-requirements). Then run 
 1. ```osmium tags-filter``` as seen in [osmium-tool/osmiumtagfilter1.sh](osmium-tool/osmiumtagfilter1.sh). 
 2. ```osmium extract``` as seen in [osmium-tool/osmiumextract2.sh](osmium-tool/osmiumextract2.sh)
-3. then run tilemaker as seen in [tilemaker/tilemaker.sh](tilemaker/tilemaker.sh) with the [tilemaker/config.json](tilemaker/config.json) and [tilemaker/process.lua](tilemaker/process.lua) as parameters.  Optionally add the store location to allow tilemaker to use ssd as swap space instead of running all in RAM. 
+3. then run tilemaker as seen in [tilemaker/tilemaker.sh](tilemaker/tilemaker.sh) with the [tilemaker/config.json](tilemaker/config.json) and [tilemaker/process.lua](tilemaker/process.lua) as parameters. Optionally add the store location to allow tilemaker to use ssd as swap space instead of running all in RAM. 
 4. You should now have your PMtiles file which you can server with any web server which support [HTTP Range Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests). More information in the Protomaps Docs regarding [Cloud Storage for PMtiles](https://docs.protomaps.com/pmtiles/cloud-storage).
 
 
 # Next steps:
 - [ ] Write the basics of ```procces.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
 - [ ] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
+- [ ] Try to generate some samples.
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemakers ```--compact```
 - [ ] Put up finished PMtiles on [golftiles.org](https://golftiles.org/)
-- [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages! Documenting the "kind" attribute and other mappings to OSM keys and tags.
+- [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages!
 - [ ] Gather icons and typeface for the style.
 - [ ] Write the style.
 - [ ] Make a vector logo for the project.
@@ -70,9 +68,9 @@ Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [s
 - [ ] If the size of the tiles is to large for my small web host, move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles. All free when the amount of requests is <10 Million each month.
 - [ ] Make a demo on [golftiles.org](https://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combinining it with some other general vector tiles for location purposes in a mapblire layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
 - [ ] Add [Mapterhorn](https://mapterhorn.com/) pmtiles as DEM data to the demo viewer.
-- [ ] add tilemaker as a git submodule to this project.
-- [ ] create github actions, generating and publishing tiles to github pages if tiles <10 GB.
-- [ ] (Maybe) packge the solution to a docker container with all dependencies for the tools.
+- [ ] Add tilemaker as a git submodule to this project.
+- [ ] Create github actions, generating and publishing tiles to github pages if tiles <10 GB.
+- [ ] (Maybe) package the solution to a docker container with all dependencies for the tools.
 
 
 
@@ -86,7 +84,7 @@ To be able to do incremental updates, but this would be more complext and requir
 - Other future endeavours could also be to explore the new [MapLibre Tile (MLT)](https://github.com/maplibre/maplibre-tile-spec) to encode the DEM data from [Mapterhorn](https://mapterhorn.com/) directly into the tiles. 
 
 ## Grants and funding
-I registred the domain https://golftiles.org to be able to serve the tiles through the Cloudflare R2 bucket under that domain for the inital PMtiles offering. When we then have something concrete to show grant organisations that this would be something good for the golf community as a whole, we could ask for some money for compute and serve the tiles publicaly.
+I registred the domain https://golftiles.org to be able to serve the tiles through the Cloudflare R2 bucket under that domain for the initial PMtiles offering. When we then have something concrete to show grant organisations that this would be something good for the golf community as a whole, we could ask for some money for compute and serve the tiles publicaly.
 
 I will try to contact the following when I have a 1.0 release of some PMTiles and a style to show off:
 - [Allmänna arvsfonden](https://www.arvsfonden.se/). 
