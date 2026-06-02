@@ -2,18 +2,17 @@
 set -eu # If any command returns non-zero, the script immediately exits 
 
 # Clear everything inside of the data/processed directory to rerun it: 
-shopt -s nullglob
-rm -rf data/processed/*.pbf
+rm -f data/processed/*.pbf data/processed/*.osm.pbf
 
-
+# echo "Step X started"
 # objects in all files must be sorted by type, ID, and version to be able to use osmium merge.
+shopt -s nullglob
 for file in data/*.pbf; do
   echo "Processing: $file"
-  your_command "$file"
-    osmium sort --output="data/processed/sorted.${file##*/}" --strategy=multipass -v "$file" # uses the multipass strategy, slower but uses less memory. Needed for merge.
+  osmium sort --output="data/processed/sorted.${file##*/}" --strategy=multipass -v "$file" # uses the multipass strategy, slower but uses less memory.
 done
 
-osmium merge data/processed/*.pbf -o data/processed/merged.osm.pbf
+osmium merge data/processed/sorted.*.pbf -o data/processed/merged.osm.pbf
 
 
 osmium tags-filter -v --output=data/processed/golfcourses.mask.osm.pbf data/processed/merged.osm.pbf wr/leisure=golf_course
