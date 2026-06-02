@@ -9,13 +9,8 @@
 		"basezoom": 14,
 		"include_ids": true,
 		"name": "Tilemaker golfTiles schema",
-		"version": "0.1",
-		"description": "Tiles for features inside of golf_courses ",
-		"metadata": {
-			"author": "Schema huggek/golfTiles contributors. Data OpenStreetMap contributors © ",
-			"license": "Data under ODbL 1.1 © OpenStreetMap contributors. Schema golfTiles.org",
-			"layer_order": { "golf": 1, "other": 2}
-		}
+		"version": "3.0",
+		"description": "Tiles for features inside of golf_courses "
 	}
 
 }

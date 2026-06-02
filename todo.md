@@ -36,4 +36,7 @@ write a one-shot shellscript to get one or multiple files and combine them all i
 -- TODO is to document how to map penalty areas with the old water_hazard and lateral_water_hazard with other surface tags to include the surface tag for like vulcanic rock etc.
 
 
-
+		"metadata": {
+			"author": "Schema huggek/golfTiles contributors. Data OpenStreetMap contributors © ",
+			"license": "Data under ODbL 1.1 © OpenStreetMap contributors. Schema golfTiles.org"
+		}
