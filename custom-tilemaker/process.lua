@@ -104,6 +104,8 @@ function node_function(node)
 	if golf ~= "" then
 		Layer("golf") -- This is what actually puts it in the tile. Remember: First layer and then attributes.
 		Attribute("golf", golf) -- key=value pairs.
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 	local natural = Find("natural") -- mainly for natural=tree
 	if natural ~= "" then
@@ -121,6 +123,8 @@ function node_function(node)
 			end
 		end
 		--TODO could be to add height= and width=
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 	-- Add signs and signposts:
 	local information = Find("information") -- Mainly for information=guideposts and other signs on the course.
@@ -128,6 +132,8 @@ function node_function(node)
 		Layer("golf")
 		Attribute("information", information)
 		 --TODO is add the descriptions and the destinations for these signs.
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 	-- Add amenity nodes:
 	local amenity = Find("amenity") -- Mainly for amenity=bench and trashcans.
@@ -155,7 +161,8 @@ function node_function(node)
 				Attribute("unisex", unisex)
 			end
 		end
-
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- toilets key for nodes: 
@@ -163,6 +170,8 @@ function node_function(node)
 	if toilets ~= "" then
 		Layer("golf")
 		Attribute("toilets", toilets)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Add AED´s:
@@ -171,6 +180,9 @@ function node_function(node)
 		Layer("golf")
 		Attribute("emergency", "defibrillator")
 		-- TODO add all Important tags here too on it if they exist.
+
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Points go to a "other" layer:
@@ -181,6 +193,8 @@ function node_function(node)
 	if man_made ~= "" then
 		Layer("other")
 		Attribute("man_made", man_made)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- add golf shops, the shop at the Masters etc.
@@ -189,6 +203,8 @@ function node_function(node)
 		Layer("other")
 		Attribute("shop", shop)
 		Attribute("name", Find("name")) -- assume all shops have name.
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Leisure-pois: (For example, leisure=firepit)
@@ -197,6 +213,8 @@ function node_function(node)
 	if leisure ~= "" then
 		Layer("other")
 		Attribute("leisure", leisure)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Tourisms nodes, 
@@ -205,6 +223,8 @@ function node_function(node)
 	if tourism ~= "" then
 		Layer("other")
 		Attribute("tourism", tourism)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 
@@ -215,12 +235,9 @@ function node_function(node)
 	if entrance ~= "" then
 		Layer("other")
 		Attribute("entrance", entrance)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
-
-	-- shared common attributes between nodes & ways/areas:
-	general_attributes() -- Move this into the different nodes! 
-	-- what happens if no Layer("other") have run - will it just fail here? Or just discard it?
-	-- TODO maybe place these general attributes inside all the placements - 
 
 
 end
@@ -256,6 +273,8 @@ function way_function()
 		-- reduce the amount of duplicate data in the database.
 		-- See the wiki under https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course#Courses_in_a_facility
 
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Golf ways and (multi)polygons:
@@ -366,7 +385,7 @@ function way_function()
 		-- generic attributes which all golf features could have:
 
 		get_architect()
-
+		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 	end
 
@@ -386,6 +405,8 @@ function way_function()
 		if leaf_type ~= "" then
 			Attribute("leaf_type", leaf_type)
 		end
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Barrier, mostly for retaining_wall and fence but could be others too:
@@ -409,6 +430,8 @@ function way_function()
 		if material ~= "" then
 			Attribute("material", material)
 		end
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 
@@ -419,6 +442,8 @@ function way_function()
 		Attribute("building", building)
 		-- Architect:
 		get_architect()
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 
@@ -437,20 +462,23 @@ function way_function()
 			Layer("golf", false)
 			Attribute("name", name)
 		end
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	--Paved stones or other surfaces, for areas between club houses which people move around on without it being a road.
 
 	local area_highway = Find("area:highway")
-		if area_highway ~= "" then
-			Layer("golf", true)
-			Attribute("area_highway", area_highway)
-			local surface = Find("surface")
-			if surface ~= "" then
-				Attribute("surface", surface)
-			end
-
+	if area_highway ~= "" then
+		Layer("golf", true)
+		Attribute("area_highway", area_highway)
+		local surface = Find("surface")
+		if surface ~= "" then
+			Attribute("surface", surface)
 		end
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
+	end
 
 	-- mainly for man_made=bridge which can occur on the golf course.
 	local man_made = Find("man_made")
@@ -462,6 +490,8 @@ function way_function()
 		end
 		Attribute("man_made", man_made)
 		get_architect()
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 
@@ -471,12 +501,16 @@ function way_function()
 		Layer("golf", false)
 		Attribute("class", waterway)
 		AttributeInteger("intermittent", 0)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 	-- Natural-tags: 
 	local natural = Find("natural")
 	if natural == "water" then -- Lakes and other water polygons
 		Layer("golf", true)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 		if Find("water") == "river" then
 			Attribute("kind", "river")
 		else
@@ -485,7 +519,8 @@ function way_function()
 	elseif natural == "tree_row" then
 		Layer("golf", false)
 		Attribute("kind", "tree_row")
-
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 		-- Optional leaf information:
 		local leaf_cycle = Find("leaf_cycle")
 		if leaf_cycle ~= "" then
@@ -503,9 +538,10 @@ function way_function()
 			Layer("golf", false)
 			Attribute("natural", natural)
 		end
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 
 	end
-
 
 	-- Ways and areas to go to a "other" layer:
 
@@ -519,6 +555,8 @@ function way_function()
 			Layer("other", false)
 		end
 		Attribute("tourism", tourism)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
 	end
 
 

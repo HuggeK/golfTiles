@@ -25,4 +25,4 @@ osmium extract -v -O --polygon=data/processed/golfcourses.mask.osm.pbf --strateg
 # --shard-stores:  Group temporary storage by area. Reduces RAM usage on large files (e.g. whole planet) but runs slower.
 # maybe use --compact?
 
-tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --store /store --verbose --shard-stores
+tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --store store/ --verbose --shard-stores
