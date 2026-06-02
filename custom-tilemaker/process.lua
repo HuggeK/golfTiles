@@ -89,6 +89,30 @@ local function general_attributes()
 
 end
 
+-- Write all ways which have wrong values in them into some file which I can upload if
+--someone wants to consume and fix it, to get the data out of this project to fix the data
+-- If it is not an Integer - it will NOT be imported, fix data in OSM.
+local function set_AttributeInteger_and_log(attributenkey, value)
+	local num = tonumber(value)
+	if num then
+		AttributeInteger(attributenkey, num)
+	else
+		local type = OsmType()
+		print("Invalid integer for "..tag_name..": "..value)
+		if type == "node" then
+			print("Invalid integer for "..type.." "..Id().." "..tag_name.."="..value )
+			-- TODO log to some file to process.
+		elseif type == "way" then
+			print("Invalid integer for "..type.." "..Id().." "..tag_name.."="..value )
+			-- TODO log to some file to process.
+		else
+			print("Invalid integer for "..type.." "..Id().." "..tag_name.."="..value )
+			-- TODO log to some file to process.
+		end
+	end
+end
+
+
 -- Nodes will only be processed if one of these keys is present. This reduces memory drastically as stated by the documentation.
 node_keys = { "golf", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
 				"male", "female", "unisex", "toilets", "emergency", "man_made", "shop", "leisure",
@@ -286,18 +310,17 @@ function way_function()
 		if golf == "hole" then
 			Layer("golf", false)
 			Attribute("golf", "hole")
-			local par = Find("par") -- TODO How to do this properly in lua? Will it be returned as a string or a number?
+			local par = Find("par")
 			if par ~= "" then
-			-- TODo Datatype integer checking for misstaggning on the following? Or does Lua fix it? Hard crash?
-				AttributeInteger("par", par)
+				set_AttributeInteger_and_log("par", par)
 			end
 			local handicap = Find("handicap")
 			if handicap ~= "" then
-				AttributeInteger("handicap", handicap)
+				set_AttributeInteger_and_log("handicap", handicap)
 			end
 			local dist = Find("dist")
 			if dist ~= "" then
-				AttributeInteger("dist", dist)
+				set_AttributeInteger_and_log("dist", dist)
 			end
 
 			-- Get the course information if it exists on the object itself:
@@ -345,7 +368,7 @@ function way_function()
 					Attribute("golf:course", golf_course) -- Maybe rename this to nr_of_holes_course
 				end
 				if golf_par ~= "" then
-					AttributeInteger("golf:par", golf_par)
+					set_AttributeInteger_and_log("golf:par", golf_par)
 				end
 
 				-- print ("Part of route "..FindInRelation("ref"))
@@ -359,13 +382,13 @@ function way_function()
 				Attribute("golf:course", golf_course)
 			end
 			if golf_par ~= "" and not set_golf_par then
-				AttributeInteger("golf:par", golf_par)
+				set_AttributeInteger_and_log("golf:par", golf_par)
 			end
 
 
 			local ref = Find("ref")  -- I tonumber(ref) needed for a lua number?
 			if ref ~= "" then
-				AttributeInteger("hole_number", ref) -- this is one of the few times a rename of the key in the tiles occur. More suitable with hole_number than generic ref.
+				set_AttributeInteger_and_log("hole_number", ref) -- this is one of the few times a rename of the key in the tiles occur. More suitable with hole_number than generic ref.
 			end
 		elseif golf == "cartpath" then
 			Layer("golf", false)
@@ -497,10 +520,9 @@ function way_function()
 
 	-- Rivers
 	local waterway = Find("waterway")
-	if waterway == "stream" or waterway == "river" or waterway == "canal" then
+	if waterway == "stream" or waterway == "river" or waterway == "canal" then -- Is this to restrictive? Maybe more?
 		Layer("golf", false)
-		Attribute("class", waterway)
-		AttributeInteger("intermittent", 0)
+		Attribute("waterway", waterway)
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 	end

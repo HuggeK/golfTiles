@@ -5,7 +5,14 @@ add a store for the tilemaker for the big europe-run.
 
 Use high_resolution in the config file.
 
-Fix AttributeInteger validations in lua.
+TODO:
+Fix AttributeInteger validations in lua. 
+Write all ways which have wrong values in them into some file which I can upload if
+someone wants to consume and fix it, to get the data out of this project to fix the data
+
+
+
+
 
 After development is done, maybe remove the "include_ids": true, to reduce tile size?
 
