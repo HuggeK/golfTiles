@@ -1,1 +1,1 @@
-osmium extract -v -O --polygon=golfcourse.tagfilter.osm.pbf --strategy=complete_ways --set-bounds --output=leisuregolfcoursesobjects.sweden.osm.pbf sweden-260526.osm.pbf
+osmium extract -v -O --polygon=golfcourses.mask.osm.pbf --strategy=complete_ways --set-bounds --output=extract.osm.pbf sweden-260526.osm.pbf

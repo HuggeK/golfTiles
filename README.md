@@ -26,7 +26,7 @@ My initial plan is to produce PMtiles to avoid having to run a tile server to re
 
 
 ---
-title: Plan for generating the PMtiles:
+title: Plan for one-shot generating the PMtiles:
 ---
 ```mermaid
 flowchart LR
@@ -44,6 +44,7 @@ I created a tag filter with the ways and relations with the leisure=golf_course,
 ```[ 0:09] Peak memory used: 4713 MBytes``` when running the Osmium-tool inside of WSL 2 on a Ubuntu 26.04 OS. The resulting file pbf was: ```6 279kb``` for Sweden. See the shell scripts in the repo.
 
 - [X] Wrote the .json for configuring the layers for tileMaker. My initial though is to put all golf features into one layer with no cut-offs for zoom. When viewing a golf course you are viewing the course at zoom level 14+ anyways.
+- [X] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
 
 
 # How to run
@@ -57,7 +58,6 @@ Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [s
 
 # Next steps:
 - [ ] Write the basics of ```process.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
-- [ ] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
 - [ ] Try to generate some samples.
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
 - [ ] Put up finished PMtiles on [golftiles.org](https://golftiles.org/)

@@ -11,15 +11,15 @@ After development is done, maybe remove the "include_ids": true, to reduce tile 
 
 Document the tile schema just like shortbread does it, via some github pages to publish it.
 
-sort the id´s from osmium and use the option in tilmaker to reduce memory usage.
+sort the id´s from osmium and use the option in tilemaker to reduce memory usage.
 
 
 Add shrubs etc?
 
-Add Wheelchair acces info as generic attributes for all nodes and or ways and polygons.
+Add Wheelchair access info as generic attributes for all nodes and or ways and polygons.
 
 
-Make more layers, golf for golf centric features, others for others to use the facility and some other hierachy?
+Make more layers, golf for golf centric features, others for others to use the facility and some other hierarchy?
 
 TODO document the architect tag for a whole course and also individual courses.
 
