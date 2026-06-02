@@ -226,7 +226,7 @@ function node_function(node)
 end
 
 -- list of possible keys or key-value pairs to speed up/use less memory:
-way_keys = {"leisure", "golf", "par", "handicap", "dist", "golf:course:name", "ref", "landuse",
+way_keys = {"leisure", "golf", "par", "handicap", "dist", "golf:course:name", "golf:course", "golf:par", "ref", "landuse",
 			"leaf_cycle", "leaf_type", "barrier", "fence_type", "material", "building", "highway",
 			"area:highway", "man_made", "waterway", "natural", "surface", "tourism", "name", "short_name",
 			"operator", "opening_hours", "wikidata", "phone", "website", "addr:postcode", "addr:city",
@@ -295,11 +295,9 @@ function way_function()
 			local set_golf_course = false
 			local set_golf_par = false
 
-			while true do -- TODO Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?
-				local relation_id = NextRelation()
-				if not relation_id then -- The object could have more than on relation, add all courses then.
-					break -- rework this lua logic to better handle all cases. 
-				end
+			while NextRelation() do -- TODO Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?
+				-- The object could have more than on relation, add all courses then.
+				-- rework this lua logic to better handle all cases. 
 				local golf_course_name_rel = FindInRelation("golf:course:name")
 				if golf_course_name_rel ~= "" then
 					golf_course_name = golf_course_name_rel -- I hope I assign to the previous declared variable to both get info from per hole and route=golf.
@@ -320,10 +318,10 @@ function way_function()
 					Attribute("golf:course:name", golf_course_name) -- Name of the course this hole belongs to.
 				end
 				if golf_course ~= "" then
-					Attribute("golf_course", golf_course) -- Maybe rename this to nr_of_holes_course
+					Attribute("golf:course", golf_course) -- Maybe rename this to nr_of_holes_course
 				end
 				if golf_par ~= "" then
-					AttributeInteger("golf_par", golf_par)
+					AttributeInteger("golf:par", golf_par)
 				end
 
 				-- print ("Part of route "..FindInRelation("ref"))
@@ -334,10 +332,10 @@ function way_function()
 				Attribute("golf:course:name", golf_course_name) -- Name of the course this hole belongs to.
 			end
 			if golf_course ~= "" and not set_golf_course then
-				Attribute("golf_course", golf_course)
+				Attribute("golf:course", golf_course)
 			end
 			if golf_par ~= "" and not set_golf_par then
-				Attribute("golf_par", golf_par)
+				AttributeInteger("golf:par", golf_par)
 			end
 
 
