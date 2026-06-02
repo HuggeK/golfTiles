@@ -58,7 +58,7 @@ function general_attributes()
 
 	local website = Find("website")
 	if website ~="" then
-		Attribute("name", name)
+		Attribute("website", website)
 	end
 
 	--Adress:
@@ -89,7 +89,7 @@ function general_attributes()
 
 end
 
--- Nodes will only be processed if one of these keys is present. This reduces momory drasticly as stated by the documentation.
+-- Nodes will only be processed if one of these keys is present. This reduces memory drastically as stated by the documentation.
 node_keys = { "golf", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
 				"male", "female", "unisex", "toilets", "emergency", "man_made", "shop", "leisure",
 				"tourism", "entrance", "name", "short_name", "operator", "opening_hours", "wikidata", "phone", "website",
@@ -112,13 +112,14 @@ function node_function(node)
 		-- Adds tree information:
 		if natural=="tree" then
 			local leaf_cycle = Find("leaf_cycle")
-			if leaf_cycle == "leaf_cycle" then
+			 if leaf_cycle~="" then
 				Attribute("leaf_cycle", leaf_cycle)
 			end
 			local leaf_type = Find("leaf_type")
-			if leaf_type == "leaf_type" then
+			if leaf_type~="" then
 				Attribute("leaf_type", leaf_type)
 			end
+		end
 		--TODO could be to add height= and width=
 	end
 	-- Add signs and signposts:
@@ -151,14 +152,14 @@ function node_function(node)
 			end 
 			local unisex = Find("unisex")
 			if unisex~="" then 
-				Attribute("female", female)
+				Attribute("unisex", unisex)
 			end 
 		end 
 
 	end
 
 	-- toilets key for nodes: 
-	local toilets = Find("toilets"):
+	local toilets = Find("toilets")
 	if toilets~="" then
 		Layer("golf")
 		Attribute("toilets", toilets)
@@ -166,7 +167,7 @@ function node_function(node)
 
 	-- Add AED´s:
 	local emergency = Find("emergency"):
-	if emergency == "defibrillator":
+	if emergency == "defibrillator" then
 		Layer("golf")
 		Attribute("emergency", "defibrillator")	
 		-- TODO add all Important tags here too on it if they exist.
@@ -269,7 +270,7 @@ function way_function()
 			end
 			local handicap = Find("handicap")
 			if handicap~="" then
-				AttributeInteger("handicap", par)
+				AttributeInteger("handicap", handicap)
 			end
 			local dist = Find("dist")
 			if dist~="" then
@@ -290,7 +291,7 @@ function way_function()
 			local set_golf_course = false
 			local set_golf_par = false
 
-			while true do -- TODo Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?
+			while true do -- TODO Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?
 				local relation_id = NextRelation()
 				if not relation_id then -- The object could have more than on relation, add all courses then.
 					break -- rework this lua logic to better handle all cases. 
@@ -306,7 +307,7 @@ function way_function()
 					set_golf_course = true
 				end 				
 				local golf_par_rel = FindInRelation("golf:par")
-				if golf_par~="" then 
+				if golf_par_rel~="" then 
 					golf_par = golf_par_rel
 					set_golf_par = true
 				end
@@ -318,7 +319,7 @@ function way_function()
 					Attribute("golf_course", golf_course) -- Maybe rename this to nr_of_holes_course
 				end
 				if golf_par~="" then 
-					Attribute("golf_par", golf_par)
+					AttributeInteger("golf_par", golf_par)
 				end
 
 				-- print ("Part of route "..FindInRelation("ref"))
@@ -336,7 +337,7 @@ function way_function()
 			end
 
 
-			local ref = Find("ref")
+			local ref = Find("ref")  -- I tonumber(ref) needed for a lua number?
 			if ref~="" then
 				AttributeInteger("hole_number", ref) -- this is one of the few times a rename of the key in the tiles occur. More suitable with hole_number than generic ref.
 			end
