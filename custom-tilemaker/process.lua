@@ -385,7 +385,6 @@ function way_function()
 				set_AttributeInteger_and_log("golf:par", golf_par)
 			end
 
-
 			local ref = Find("ref")  -- I tonumber(ref) needed for a lua number?
 			if ref ~= "" then
 				set_AttributeInteger_and_log("hole_number", ref) -- this is one of the few times a rename of the key in the tiles occur. More suitable with hole_number than generic ref.
@@ -399,6 +398,9 @@ function way_function()
 		elseif golf == "out_of_bounds" then
 			Layer("golf", false)
 			Attribute("golf", "out_of_bounds")
+		elseif golf == "path" then
+			Layer("golf", false)
+			Attribute("golf", "path")
 		else -- For all other golf features which are ways which are not specified in this schema above, assume they are areas.
 			Layer("golf", true)
 			Attribute("golf", golf)
@@ -534,13 +536,13 @@ function way_function()
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 		if Find("water") == "river" then
-			Attribute("kind", "river")
+			Attribute("water", "river")
 		else
-			Attribute("kind", "lake")
+			Attribute("water", "lake")
 		end
 	elseif natural == "tree_row" then
 		Layer("golf", false)
-		Attribute("kind", "tree_row")
+		Attribute("natural", "tree_row")
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 		-- Optional leaf information:

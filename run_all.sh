@@ -13,7 +13,6 @@ done
 
 osmium merge data/processed/sorted.*.pbf -o data/processed/merged.osm.pbf
 
-
 osmium tags-filter -v --output=data/processed/golfcourses.mask.osm.pbf data/processed/merged.osm.pbf wr/leisure=golf_course
 
 osmium extract -v -O --polygon=data/processed/golfcourses.mask.osm.pbf --strategy=smart -S types=any --set-bounds --output=data/processed/extract.osm.pbf data/processed/merged.osm.pbf # -O is allowing overwrites.
@@ -26,4 +25,4 @@ osmium extract -v -O --polygon=data/processed/golfcourses.mask.osm.pbf --strateg
 # maybe use --compact?
 
 #tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --store store/ --verbose --shard-stores # TODO is to fix stores. 
-tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --verbose --shard-stores
+tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --verbose --shard-stores -O
