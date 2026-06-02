@@ -98,15 +98,15 @@ local function set_AttributeInteger_and_log(attributenkey, value)
 		AttributeInteger(attributenkey, num)
 	else
 		local type = OsmType()
-		print("Invalid integer for "..tag_name..": "..value)
+		print("Invalid integer for "..attributenkey..": "..value)
 		if type == "node" then
-			print("Invalid integer for "..type.." "..Id().." "..tag_name.."="..value )
+			print("Invalid integer for "..type.." "..Id().." "..attributenkey.."="..value )
 			-- TODO log to some file to process.
 		elseif type == "way" then
-			print("Invalid integer for "..type.." "..Id().." "..tag_name.."="..value )
+			print("Invalid integer for "..type.." "..Id().." "..attributenkey.."="..value )
 			-- TODO log to some file to process.
 		else
-			print("Invalid integer for "..type.." "..Id().." "..tag_name.."="..value )
+			print("Invalid integer for "..type.." "..Id().." "..attributenkey.."="..value )
 			-- TODO log to some file to process.
 		end
 	end
