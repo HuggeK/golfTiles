@@ -1,1 +1,0 @@
-tilemaker --input leisuregolfcoursesobjects.sweden.osm.pbf --output swedenGolfTiles.pmtiles --store ../store --verbose

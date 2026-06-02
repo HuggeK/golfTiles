@@ -45,19 +45,23 @@ I created a tag filter with the ways and relations with the leisure=golf_course,
 
 - [X] Wrote the .json for configuring the layers for tileMaker. My initial though is to put all golf features into one layer with no cut-offs for zoom. When viewing a golf course you are viewing the course at zoom level 14+ anyways.
 - [X] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
-
+- [X] Write the basics of ```process.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
 
 # How to run
 
-Install [Osmium-tool](https://osmcode.org/osmium-tool/). Build tilemaker from [source](https://github.com/systemed/tilemaker/tree/master). Download a planet [extract .pbf file](https://switch2osm.org/serving-tiles/#System-requirements). Then run 
-1. ```osmium tags-filter``` as seen in [osmium-tool/osmiumtagfilter1.sh](osmium-tool/osmiumtagfilter1.sh). 
-2. ```osmium extract``` as seen in [osmium-tool/osmiumextract2.sh](osmium-tool/osmiumextract2.sh)
-3. then run tilemaker as seen in [tilemaker/tilemaker.sh](tilemaker/tilemaker.sh) with the [tilemaker/config.json](tilemaker/config.json) and [tilemaker/process.lua](tilemaker/process.lua) as parameters. Optionally add the store location to allow tilemaker to use ssd as swap space instead of running all in RAM. 
-4. You should now have your PMtiles file which you can server with any web server which support [HTTP Range Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests). More information in the Protomaps Docs regarding [Cloud Storage for PMtiles](https://docs.protomaps.com/pmtiles/cloud-storage).
+1. Install [Osmium-tool](https://osmcode.org/osmium-tool/). 
+2. Tilemaker is added as a submodule to this repository. Run ```git submodule update --init``` to download the submodule. Build tilemaker from source [tilemaker/README.md](tilemaker/README.md). 
+3. Download a planet [extract .pbf file(s)](https://switch2osm.org/serving-tiles/#System-requirements) and place it in [data/](data/). 
+
+```cd``` to the root of [golfTiles/](golfTiles/) repository.
+
+Then run:
+- run_all.sh 
+   - Tilemaker is using [custom-tilemaker/config.json](custom-tilemaker/config.json) and [custom-tilemaker/process.lua](custom-tilemaker/process.lua) as parameters. The script is using the store directory as swapspace, remove it if you have enough RAM. 
+- You should now have your PMtiles file which you can serve with any web server which support [HTTP Range Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests). You can inspect the PMtiles at https://pmtiles.io/. More information in the Protomaps Docs regarding [Cloud Storage for PMtiles](https://docs.protomaps.com/pmtiles/cloud-storage).
 
 
 # Next steps:
-- [ ] Write the basics of ```process.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
 - [ ] Try to generate some samples.
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
 - [ ] Put up finished PMtiles on [golftiles.org](https://golftiles.org/)

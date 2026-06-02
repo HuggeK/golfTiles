@@ -24,6 +24,9 @@ Make more layers, golf for golf centric features, others for others to use the f
 TODO document the architect tag for a whole course and also individual courses.
 
 
+write a one-shot shellscript to get one or multiple files and combine them all into one big file - just place your data in the data directory.
+
+
 # Regarding the course information:
 
 -- Add the attributes from the relation into their respective tags. 

@@ -1,1 +1,0 @@
-osmium tags-filter -v --output=golfcourses.mask.osm.pbf sweden-260526.osm.pbf wr/leisure=golf_course
