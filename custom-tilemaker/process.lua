@@ -295,7 +295,12 @@ function way_function()
 			local set_golf_course = false
 			local set_golf_par = false
 
-			while NextRelation() do -- TODO Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?
+			while true do -- TODO Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?¨
+				local relation_id = NextRelation()
+				if not relation_id then -- The hole could have more than one relation, add all courses to it then.
+					-- How would one then know
+					break -- rework this lua logic to better handle all cases. 
+				end
 				-- The object could have more than on relation, add all courses then.
 				-- rework this lua logic to better handle all cases. 
 				local golf_course_name_rel = FindInRelation("golf:course:name")
