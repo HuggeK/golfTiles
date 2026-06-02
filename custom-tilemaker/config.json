@@ -7,10 +7,11 @@
 		"minzoom": 4,
 		"maxzoom": 14,
 		"basezoom": 14,
-		"include_ids": true,
+		"include_ids": false,
 		"name": "Tilemaker golfTiles schema",
-		"version": "3.0",
-		"description": "Tiles for features inside of golf_courses "
-	}
+		"version": "0.1",
+		"description": "Tiles for features inside of golf_courses ",
+		"compress": "gzip"
+		}
 
 }
