@@ -97,7 +97,7 @@ node_keys = { "golf", "natural", "leaf_cycle", "leaf_type", "information", "amen
 
 -- Assign nodes to a layer, and set attributes, based on OSM tags
 function node_function(node)
-	-- TODO rewrite this logic, its only one node per function call no need for too many evalutions? Or the interpreter fixes it?
+	-- TODO rewrite this logic, its only one node per function call no need for too many evaluations? Or the interpreter fixes it?
 
 	-- Points to go to the "golf" layer. Features on the course itself.
 	local golf = Find("golf")
@@ -166,7 +166,7 @@ function node_function(node)
 	end 
 
 	-- Add AED´s:
-	local emergency = Find("emergency"):
+	local emergency = Find("emergency")
 	if emergency == "defibrillator" then
 		Layer("golf")
 		Attribute("emergency", "defibrillator")	
@@ -175,7 +175,7 @@ function node_function(node)
 
 	-- Points go to a "other" layer:
 	-- Features which can be all around the course but is not only found on the course itself.
-	-- Ask youself: "Is this something that is not inherintely intresting to people who not play golf? "
+	-- Ask yourself: "Is this something that is not inherently interesting to people who not play golf? "
 
 	local man_made= Find("man_made") -- Mainly for man_made=water_tap 
 	if man_made~="" then
@@ -188,7 +188,7 @@ function node_function(node)
 	if shop~="" then
 		Layer("other")
 		Attribute("shop", shop)
-		Attribute("name", Find("name")) -- asume all shops have name.
+		Attribute("name", Find("name")) -- assume all shops have name.
 	end
 
 	-- Leisure-pois: (For example, leisure=firepit)
@@ -219,7 +219,7 @@ function node_function(node)
 	
 	-- shared common attributes between nodes & ways/areas:
 	general_attributes() -- Move this into the different nodes! 
-	-- what happens if no Layer("other") have run - will it just fail here? Or just disgard it?
+	-- what happens if no Layer("other") have run - will it just fail here? Or just discard it?
 	-- TODO maybe place these general attributes inside all the placements - 
 
 
@@ -241,14 +241,14 @@ function way_function()
 		Attribute("leisure", "golf_course")
 
 		-- Due to old tagging schemas - course data which are tagged on the leisure=golf_course
-		-- polygon is hard to acces because that would require to query the data to be able to
-		-- determine which holes are inside of a specifc facility and then apply these tags if they exist
+		-- polygon is hard to access because that would require to query the data to be able to
+		-- determine which holes are inside of a specific facility and then apply these tags if they exist
 		-- on the leisure=golf_course to the golf=hole to produce same tiles regardless how it was tagged.
-		-- To not encourage this mapping behaviour, this data on leisure=golf_course is omitted.
+		-- To not encourage this mapping behavior, this data on leisure=golf_course is omitted.
 
-		--NOTE: Althogh it is possible to tag course tags on the leisure=golf_course and many have done so
-		-- becuase the lack of better tagging practices documented. It is NOT recomennded. 
-		-- For better data, do it with a route=golf or map it into the golf=holes themselves where route=golf is prefered to 
+		--NOTE: Although it is possible to tag course tags on the leisure=golf_course and many have done so
+		-- because the lack of better tagging practices documented. It is NOT recommended. 
+		-- For better data, do it with a route=golf or map it into the golf=holes themselves where route=golf is preferred to 
 		-- reduce the amount of duplicate data in the database.
 		-- See the wiki under https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course#Courses_in_a_facility
 
@@ -285,7 +285,7 @@ function way_function()
 			local golf_par = Find("golf:par") -- The par for the entire course.
 
 			-- Get potential route=golf relation with information about the course:
-			-- If boths exist, prioritizes info in route=golf:
+			-- If both exist, prioritizes info in route=golf:
 
 			local set_golf_course_name = false
 			local set_golf_course = false
@@ -298,7 +298,7 @@ function way_function()
 				end
 				local golf_course_name_rel = FindInRelation("golf:course:name")
 				if golf_course_name_rel~="" then 
-					golf_course_name = golf_course_name_rel -- I hope I assign to the previus declared variable to both get info from per hole and route=golf.
+					golf_course_name = golf_course_name_rel -- I hope I assign to the previous declared variable to both get info from per hole and route=golf.
 					set_golf_course_name = true
 				end
 				local golf_course_rel = FindInRelation("golf:course")
@@ -350,7 +350,7 @@ function way_function()
 		elseif golf == "out_of_bounds" then 
 			Layer("golf", false)
 			Attribute("golf", "out_of_bounds")
-		else -- For all other golf features which are ways which are not specified in this schema above, asume they are areas.
+		else -- For all other golf features which are ways which are not specified in this schema above, assume they are areas.
 			Layer("golf", true)
 			Attribute("golf", golf)
 			-- How will golf=clubhouse be handled? duplicate data as this is written now that it is both a building and a golf=clubhouse?
@@ -381,7 +381,7 @@ function way_function()
 		end
 	end
 
-	-- Barrier, mostly for retainig_wall and fence but could be others too:
+	-- Barrier, mostly for retaining_wall and fence but could be others too:
 
 	local barrier = Find("barrier")
 	if barrier~="" then
