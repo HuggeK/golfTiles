@@ -1,3 +1,5 @@
 *.pbf
 .pmtiles
 /.vscode
+*:Zone.Identifier
+!/samples/*.pmtiles
