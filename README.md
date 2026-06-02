@@ -46,6 +46,7 @@ I created a tag filter with the ways and relations with the leisure=golf_course,
 - [X] Wrote the .json for configuring the layers for tileMaker. My initial though is to put all golf features into one layer with no cut-offs for zoom. When viewing a golf course you are viewing the course at zoom level 14+ anyways.
 - [X] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
 - [X] Write the basics of ```process.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
+- [X] Try to generate some samples.
 
 # How to run
 
@@ -62,7 +63,6 @@ Then run:
 
 
 # Next steps:
-- [ ] Try to generate some samples.
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
 - [ ] Put up finished PMtiles on [golftiles.org](https://golftiles.org/)
 - [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages!
