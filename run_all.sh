@@ -1,12 +1,11 @@
 #!/bin/bash
 set -eu # If any command returns non-zero, the script immediately exits 
-
+shopt -s nullglob
 # Clear everything inside of the data/processed directory to rerun it: 
 rm -f data/processed/*.pbf data/processed/*.osm.pbf
 
 # echo "Step X started"
 # objects in all files must be sorted by type, ID, and version to be able to use osmium merge.
-shopt -s nullglob
 for file in data/*.pbf; do
   echo "Processing: $file"
   osmium sort --output="data/processed/sorted.${file##*/}" --strategy=multipass -v "$file" # uses the multipass strategy, slower but uses less memory.
