@@ -9,6 +9,7 @@
 
 ]]--
 
+-- Accepts the route=golf to be imported to be used as the course(s)
 function relation_scan_function()
   if Find("type")=="route" and Find("route")=="golf" then
 		Accept() 
@@ -24,7 +25,17 @@ function get_architect()
 end 
 
 -- general tags - both applicable on nodes and ways/areas. Shared between node_function() and way_function()
+-- This is just complementary Attributes/tags - another key need to get it into the layer. 
 function general_attributes()
+	local name = Find("name")
+	if name~="" then
+		Attribute("name", name)
+	end
+	local short_name = Find("short_name")
+	if short_name~="" then 
+		Attribute("short_name", short_name)
+	end
+	-- TODO fix multi-language naming with the subtag name:<CODE>=<LANGUAGE>
 	local operator = Find("operator")
 	if operator ~="" then
 		Attribute("operator", operator)
@@ -70,15 +81,19 @@ function general_attributes()
 		Attribute("access", access)
 	end 
 
+	-- Sports:
+	local sport = Find("sport")
+	if sport~="" then 
+		Attribute("sport", sport)
+	end
+
 end
-
-
 
 -- Nodes will only be processed if one of these keys is present. This reduces momory drasticly as stated by the documentation.
 node_keys = { "golf", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
-				"male", "female", "unisex", "toilets", "emergency", "man_made", "shop"," name", "leisure",
-				"tourism", "entrance", "operator", "opening_hours", "wikidata", "phone", "website",
-				"addr:postcode", "addr:city", "addr:street", "access" } 
+				"male", "female", "unisex", "toilets", "emergency", "man_made", "shop", "leisure",
+				"tourism", "entrance", "name", "short_name", "operator", "opening_hours", "wikidata", "phone", "website",
+				"addr:postcode", "addr:city", "addr:street", "access", "sport" } 
 
 -- Assign nodes to a layer, and set attributes, based on OSM tags
 function node_function(node)
@@ -105,7 +120,7 @@ function node_function(node)
 				Attribute("leaf_type", leaf_type)
 			end
 		--TODO could be to add height= and width=
-	ends
+	end
 	-- Add signs and signposts:
 	local information = Find("information") -- Mainly for information=guideposts and other signs on the course.
 	if information~="" then
@@ -202,13 +217,15 @@ function node_function(node)
 	end
 	
 	-- shared common attributes between nodes & ways/areas:
-	general_attributes()
+	general_attributes() -- Move this into the different nodes! 
+	-- what happens if no Layer("other") have run - will it just fail here? Or just disgard it?
+	-- TODO maybe place these general attributes inside all the placements - 
 
 
 end
 
 -- list of possible keys or key-value pairs to speed up/use less memory:
-way_keys = {"leisure", "name", "golf", "natural", "surface", "highway", "waterway", "building", "landuse" } 
+way_keys = {"leisure", "golf", "par", "handicap", "dist", "golf:course:name", "ref", "landuse", "leaf_cycle", "leaf_type", "barrier", "fence_type", "material", "building", "highway", "area:highway", "man_made", "waterway", "natural", "surface", "tourism", "name", "short_name", "operator", "opening_hours", "wikidata", "phone", "website", "addr:postcode", "addr:city", "addr:street", "access", "sport"} 
 
 -- Assign ways to a layer, and set attributes, based on OSM tags:
 
@@ -221,20 +238,18 @@ function way_function()
 	if leisure == "golf_course" then
 		Layer("golf", true) -- Second parameter denotes true - it is an area, not a way.
 		Attribute("leisure", "golf_course")
-		local name = Find("name")
-		if name~="" then
-			Attribute("name", name)
-		end
-		-- TODO fix multi-language naming with the subtag name:<CODE>=<LANGUAGE>
-		local short_name = Find("short_name") -- If the club is named Exempelklubben Golfklubb would the short name be Exempelklubben GK or other name 
-		if short_name~="" then 
-			Attribute("short_name", short_name)
-		end 
-		--NOTE that this schema is working with the route=golf way of representing multiple courses inside of one course,
-		-- see the osm wiki for more discussion of the matter. one could argue that it is imposible for data consumers
-		-- to know what holes goes into what course, with the golf:course key on the leisure=golf_course facility. 
-		
-		general_attributes()
+
+		-- Due to old tagging schemas - course data which are tagged on the leisure=golf_course
+		-- polygon is hard to acces because that would require to query the data to be able to
+		-- determine which holes are inside of a specifc facility and then apply these tags if they exist
+		-- on the leisure=golf_course to the golf=hole to produce same tiles regardless how it was tagged.
+		-- To not encourage this mapping behaviour, this data on leisure=golf_course is omitted.
+
+		--NOTE: Althogh it is possible to tag course tags on the leisure=golf_course and many have done so
+		-- becuase the lack of better tagging practices documented. It is NOT recomennded. 
+		-- For better data, do it with a route=golf or map it into the golf=holes themselves where route=golf is prefered to 
+		-- reduce the amount of duplicate data in the database.
+		-- See the wiki under https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course#Courses_in_a_facility
 
 	end
 
@@ -244,7 +259,7 @@ function way_function()
 	if golf~="" then
 
 		-- Hole logic:
-		elseif golf == "hole" then 
+		if golf == "hole" then 
 			Layer("golf", false)
 			Attribute("golf", "hole")
 			local par = Find("par")-- TODO How to do this properly in lua? Will it be returned as a string or a number?
@@ -254,75 +269,112 @@ function way_function()
 			end
 			local handicap = Find("handicap")
 			if handicap~="" then
-				AttributeInteger("par", par)
+				AttributeInteger("handicap", par)
 			end
 			local dist = Find("dist")
 			if dist~="" then
 				AttributeInteger("dist", dist)
 			end
+	
+			-- Get the course information if it exists on the object itself:
+			local golf_course_name = Find("golf:course:name") -- Will it be the same object down in the relation-info to get these values?
 
+			local golf_course = Find("golf:course")
 
-			local name = Find("name")
-			if name~="" then 
-				AttributeInteger("name", name) -- Name of the hole.
+			local golf_par = Find("golf:par") -- The par for the entire course.
+
+			-- Get potential route=golf relation with information about the course:
+			-- If boths exist, prioritizes info in route=golf:
+
+			local set_golf_course_name = false
+			local set_golf_course = false
+			local set_golf_par = false
+
+			while true do -- TODo Put this into a function and pass parameters to be able to use it on tee´s and out_of_bounds?
+				local relation_id = NextRelation()
+				if not relation_id then -- The object could have more than on relation, add all courses then.
+					break -- rework this lua logic to better handle all cases. 
+				end
+				local golf_course_name_rel = FindInRelation("golf:course:name")
+				if golf_course_name_rel~="" then 
+					golf_course_name = golf_course_name_rel -- I hope I assign to the previus declared variable to both get info from per hole and route=golf.
+					set_golf_course_name = true
+				end
+				local golf_course_rel = FindInRelation("golf:course")
+				if golf_course_rel~="" then 
+					golf_course = golf_course_rel
+					set_golf_course = true
+				end 				
+				local golf_par_rel = FindInRelation("golf:par")
+				if golf_par~="" then 
+					golf_par = golf_par_rel
+					set_golf_par = true
+				end
+				-- Sets the attributes:
+				if golf_course_name~="" then 
+					Attribute("golf:course:name", golf_course_name) -- Name of the course this hole belongs to.
+				end 
+				if golf_course~="" then 
+					Attribute("golf_course", golf_course) -- Maybe rename this to nr_of_holes_course
+				end
+				if golf_par~="" then 
+					Attribute("golf_par", golf_par)
+				end
+
+				-- print ("Part of route "..FindInRelation("ref"))
+			end
+
+			-- Still sets the course info from the golf=holes even if no route=golf tags is present.
+			if golf_course_name~="" and not set_golf_course_name then 
+				Attribute("golf:course:name", golf_course_name) -- Name of the course this hole belongs to.
 			end 
+			if golf_course~="" and not set_golf_course then 
+				Attribute("golf_course", golf_course)
+			end
+			if golf_par~="" and not set_golf_par then 
+				Attribute("golf_par", golf_par)
+			end
 
-			-- TODO connect with the relations here to get the name of the course both also through it.
-			-- Prefer the name from the route=golf instead of the per hole data which have been tagged. 
 
 			local ref = Find("ref")
 			if ref~="" then
 				AttributeInteger("hole_number", ref) -- this is one of the few times a rename of the key in the tiles occur. More suitable with hole_number than generic ref.
 			end
-
-		end
 		elseif golf == "cartpath" then 
 			Layer("golf", false)
 			Attribute("golf", "cartpath")
-		end
 		--elseif golf == "path"
-			-- NOTE! That As discussed by people in the talk page of this tag this could be superfluous, as the wiki states:  "It is likely that standard tags highway=path and highway=footway should be used instead."
-		--end
+			-- NOTE! That As discussed by people in the talk page of this tag this could be superfluous, 
+			-- as the wiki states:  "It is likely that standard tags highway=path and highway=footway should be used instead."
 		elseif golf == "out_of_bounds" then 
 			Layer("golf", false)
 			Attribute("golf", "out_of_bounds")
-		end
-		else
-			Layer("golf", true) -- For all other golf features which are ways which are not specified in this schema above, asume they are areas.
+		else -- For all other golf features which are ways which are not specified in this schema above, asume they are areas.
+			Layer("golf", true)
 			Attribute("golf", golf)
 			-- How will golf=clubhouse be handled? duplicate data as this is written now that it is both a building and a golf=clubhouse?
+			-- TODO research how we best represent different tee colors/numbers and update the wiki!
 		end
 		-- generic attributes which all golf features could have:
-		-- TODO maybe move this so all ways could have this on the last pass?
-		local name = Find("name")
-		if name~="" then 
-			Attribute("name", name) -- Generic name for the golf feature.
-		end
-		local operator = Find("operator")
-		if operator ~="" then
-			Attribute("operator", operator)
-		end
-		local sport = Find("sport")
-		if sport~="" then 
-			Attribute("sport", sport) -- The polygon could be sport=golf or other sport.
-		end
 	
 		get_architect()
+
+		general_attributes()
 	end
 
 	--Landuse:
 
 	local landuse = Find("landuse")
 	if landuse~="" then
-		Layer("golf", true)
+		Layer("golf", true) -- Always an area.
 		Attribute("landuse", landuse)
 
 		-- Optional leaf information.
-		leaf_cycle = Find("leaf_cycle")
+		local leaf_cycle = Find("leaf_cycle")
 		if leaf_cycle~="" then 
 			Attribute("leaf_cycle", leaf_cycle)
 		end
-		leaf_type = Find("leaf_type")
+		local leaf_type = Find("leaf_type")
 		if leaf_type~="" then 
 			Attribute("leaf_type", leaf_type)
 		end
@@ -332,15 +384,20 @@ function way_function()
 
 	local barrier = Find("barrier")
 	if barrier~="" then
-		Layer("golf", false)
+
+		if IsClosed() then
+			Layer("golf", true)
+		else 
+			Layer("golf", false)
+		end
 		Attribute("barrier", barrier)
 
 		-- Optional fence/barrier information.
-		fence_type = Find("fence_type")
+		local fence_type = Find("fence_type")
 		if fence_type~="" then 
 			Attribute("fence_type", fence_type)
 		end
-		material = Find("material")
+		local material = Find("material")
 		if material~="" then 
 			Attribute("material", material)
 		end
@@ -350,7 +407,8 @@ function way_function()
 	-- Buildings
 	local building = Find("building")
 	if building~="" then
-		Layer("building", true)
+		Layer("golf", true)
+		Attribute("building", building)
 		-- Architect:
 		get_architect()
 	end
@@ -380,27 +438,25 @@ function way_function()
 		if area_highway~="" then
 			Layer("golf", true)
 			Attribute("area_highway", area_highway)
-			local surface = Find("area:highway")
+			local surface = Find("surface")
 			if surface~="" then
 				Attribute("surface", surface)
 			end
 
 		end 
 
-	-- Bridges: (yEaH?)
-
-	-- importing this twice becuase of the man_made import too? TODO research.
-	local bridge = Find("bridge")
-	if bridge~="" then 
-		if OsmType() == "way" then
-			Layer("golf", false)
-			Attribute("bridge", bridge)
-		else 
+	-- mainly for man_made=bridge which can occur on the golf course.
+	local man_made = Find("man_made")
+	if man_made~="" then 
+		if IsClosed() then
 			Layer("golf", true)
-			Attribute("bridge", bridge)
+		else 
+			Layer("golf", false)
 		end
+		Attribute("man_made", man_made)
 		get_architect()
 	end
+
 
 	-- Rivers
 	local waterway = Find("waterway")
@@ -422,36 +478,41 @@ function way_function()
 	elseif natural=="tree_row" then
 		Layer("golf", false)
 		Attribute("kind", "tree_row")
-		if Find(key) == "leaf_cycle" then
-			Attribute("leaf_cycle", Find("leaf_cycle"))
+		
+		-- Optional leaf information:
+		local leaf_cycle = Find("leaf_cycle")
+		if leaf_cycle~="" then 
+			Attribute("leaf_cycle", leaf_cycle)
 		end
-		if Find(key) == "leaf_type" then
-			Attribute("leaf_type", Find("leaf_type"))
+		local leaf_type = Find("leaf_type")
+		if leaf_type~="" then 
+			Attribute("leaf_type", leaf_type)
 		end
 	elseif natural~="" then --import all natur=* tags to cover other, bushes waste areas etc?
-		if OsmType() == "way" then
-			Layer("golf", false)
+		if IsClosed() then -- tODO will multiPolygons be covered by this?
+			Layer("golf", true)
 			Attribute("natural", natural)
 		else
-			Layer("golf", true)
+			Layer("golf", false)
 			Attribute("natural", natural)
 		end 
 
 	end
 
 
--- Ways and areas to go to a "other" layer:
+	-- Ways and areas to go to a "other" layer:
 
-
--- Tourisms nodes, 
--- Campsites/huts which some golf clubs have inside of their facilities:
-local tourism = Find("tourism")
-if tourism~="" then
-	Layer("other", true) -- I assume all tourist is areas. Artwork could be a way. TODO resolve. 
-	Attribute("tourism", tourism)
-end
-
-
+	-- Tourisms nodes, 
+	-- Mainly for Campsites/huts which some golf clubs have inside of their facilities:
+	local tourism = Find("tourism")
+	if tourism~="" then
+		if IsClosed() then
+			Layer("other", true)
+		else 
+			Layer("other", false)
+		end
+		Attribute("tourism", tourism)
+	end
 
 
 end

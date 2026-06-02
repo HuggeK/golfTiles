@@ -1,4 +1,11 @@
+
+-- TODO research how we best represent different tee colors and update the wiki!
+
 add a store for the tilemaker for the big europe-run. 
+
+Use high_resolution in the config file.
+
+
 
 After development is done, maybe remove the "include_ids": true, to reduce tile size?
 
@@ -12,23 +19,15 @@ Add shrubs etc?
 Add Wheelchair acces info as generic attributes for all nodes and or ways and polygons.
 
 
-
 Make more layers, golf for golf centric features, others for others to use the facility and some other hierachy?
 
 TODO document the architect tag for a whole course and also individual courses.
 
 
 # Regarding the course information:
--- Add the route=golf type=route relations for the golf courses, as documented in: https://wiki.openstreetmap.org/wiki/Tag:route%3Dgolf
 
--- TODO write this that it could both be mapped as per hole with name and also as a route=golf and still output the same type as navigatable vector tiles?
--- This navigation logic is maybe better handled by these app as a separate overpass instance to query the relationships? 
--- But the good things about having it in the tiles is that we can style and animate on it?
+-- Add the attributes from the relation into their respective tags. 
 
--- TODO plan: Embedd the course route=golf relation id on the applicable golf=holes. and the relations
--- OR add it ass attributes (= vector tile metadata/tags)
-
--- MAYBE verify ref= order here in this code as sanity check? Or maybe not
 
 
 -- TODO is to document how to map penalty areas with the old water_hazard and lateral_water_hazard with other surface tags to include the surface tag for like vulcanic rock etc.
