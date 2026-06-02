@@ -1,0 +1,3 @@
+[submodule "tilemaker"]
+	path = tilemaker
+	url = https://github.com/systemed/tilemaker
