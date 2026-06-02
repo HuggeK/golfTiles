@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eu # If any command returns non-zero, the script immediately exits 
+set -euo pipefail # If any command returns non-zero, the script immediately exits 
 shopt -s nullglob
 # Clear everything inside of the data/processed directory to rerun it: 
 rm -f data/processed/*.pbf data/processed/*.osm.pbf

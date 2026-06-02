@@ -435,7 +435,6 @@ function way_function()
 		local name = Find("name")
 		if name ~= "" then
 			Layer("golf", false)
-			Attribute("highway", highway)
 			Attribute("name", name)
 		end
 	end
