@@ -58,7 +58,8 @@ It would have been good if I could write metadata when the tiles was generated a
 
 <details>
 <summary>Test with data/united-kingdom-260602.osm.pbf: </summary>
-```
+
+```bash
 Processing: data/united-kingdom-260602.osm.pbf
 [ 0:00] Started osmium sort
 [ 0:00]   osmium version 1.19.0
@@ -557,7 +558,6 @@ Then run:
 - [ ] Add [Mapterhorn](https://mapterhorn.com/) pmtiles as DEM data to the demo viewer.
 - [ ] Create github actions, generating and publishing tiles to github pages of small extracts to fit <10 GB and 6h limit on runners.
 - [ ] (Maybe) package the solution to a docker container with all dependencies for the tools.
-
 
 
 # Future technical development to solve the limitation using tileMaker
