@@ -235,10 +235,14 @@ function node_function(node)
 
 	local leisure = Find("leisure")
 	if leisure ~= "" then
-		Layer("other")
-		Attribute("leisure", leisure)
-		-- "General" common "extra" attributes between nodes & ways/areas:
-		general_attributes()
+		-- NOTE golf courses tagged as nodes will not be included because of the sensible choice to 
+		-- filter out all objects based on a mask constructed from the polygons of of the facilities.
+		if leisure ~= "golf_course" then
+			Layer("other")
+			Attribute("leisure", leisure)
+			-- "General" common "extra" attributes between nodes & ways/areas:
+			general_attributes()
+		end
 	end
 
 	-- Tourisms nodes, 
@@ -282,7 +286,7 @@ function way_function()
 	-- The main (multi)polygon facility, 0:
 	local leisure = Find("leisure")
 	if leisure == "golf_course" then
-		Layer("golf", true) -- Second parameter denotes true - it is an area, not a way.
+		Layer("facilities", true) -- Second parameter denotes true - it is an area, not a way.
 		Attribute("leisure", "golf_course")
 
 		-- Due to old tagging schemas - course data which are tagged on the leisure=golf_course

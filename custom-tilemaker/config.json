@@ -1,17 +1,23 @@
 {
 	"layers": {
-		"golf": { "minzoom":  0, "maxzoom": 14 },
-		"other": { "minzoom":  0, "maxzoom": 14 }
+		"facilities": { "minzoom":  0, "maxzoom": 14 },
+		"golf": { "minzoom":  12, "maxzoom": 14 },
+		"other": { "minzoom":  12, "maxzoom": 14 }
 	},
 	"settings": {
-		"minzoom": 4,
+		"minzoom": 0,
 		"maxzoom": 14,
 		"basezoom": 14,
 		"include_ids": true,
+		"high_resolution": true,
 		"name": "Tilemaker golfTiles schema",
 		"version": "0.1",
 		"description": "Tiles for features inside of golf_courses ",
 		"compress": "gzip"
+		},
+		"metadata": {
+			"author": "Schema huggek/golfTiles contributors. Data OpenStreetMap contributors © ",
+			"license": "Data under Open Database License (ODbL) © OpenStreetMap contributors. Schema golfTiles.org",
+			"layer_order": { "golf": 1, "other": 2}
 		}
-
 }

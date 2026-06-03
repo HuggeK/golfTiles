@@ -12,6 +12,12 @@ someone wants to consume and fix it, to get the data out of this project to fix 
 
 
 
+TODO maybe clip the pbf file again to get rid of these wast areas which strecthes outside of the course boundary?
+
+TODO is to explain all the chosen configurations in a .md file.
+
+
+
 
 
 After development is done, maybe remove the "include_ids": true, to reduce tile size?

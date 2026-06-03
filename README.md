@@ -48,6 +48,18 @@ I created a tag filter with the ways and relations with the leisure=golf_course,
 - [X] Write the basics of ```process.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
 - [X] Try to generate some samples.
 
+I configured my WSL2 ubuntu machine with 23 GiB of RAM and 7.8 GiB of ssd swapspace. When trying to run the entire europe-latest.osm.pbf my VM crashes. More investigation is needed, maybe
+
+I was benchmarking the geofabriks extract of 
+
+It would have been good if I could write metadata when the tiles was generated and what extracts it is based upon on as metadata, I opened an [idea](https://github.com/systemed/tilemaker/discussions/911) in the discussion page of the tilemaker repository. It would be good if it could be fetched from the metadata of the .pbf files osmium has processed. It seems like the osmium-tool steps is removing the metadata. Seems like there was a [pull request](https://github.com/osmcode/libosmium/issues/241) which was merged, which adds this to libosmium. 
+
+
+
+
+
+
+
 # How to run
 
 1. Install [Osmium-tool](https://osmcode.org/osmium-tool/). 

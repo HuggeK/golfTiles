@@ -6,6 +6,7 @@ rm -f data/processed/*.pbf data/processed/*.osm.pbf
 
 # echo "Step X started"
 # objects in all files must be sorted by type, ID, and version to be able to use osmium merge.
+# TODO add error code and message that files are missing in the data/ folder.
 for file in data/*.pbf; do
   echo "Processing: $file"
   osmium sort --output="data/processed/sorted.${file##*/}" --strategy=multipass -v "$file" # uses the multipass strategy, slower but uses less memory.
@@ -26,3 +27,4 @@ osmium extract -v -O --polygon=data/processed/golfcourses.mask.osm.pbf --strateg
 
 #tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --store store/ --verbose --shard-stores # TODO is to fix stores. 
 tilemaker --input data/processed/extract.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --verbose --shard-stores
+# You can feed tilemaker with multiple .pbf files - maybe split it up for whole world? 
