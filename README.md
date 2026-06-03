@@ -550,11 +550,12 @@ Then run:
 - [ ] Write code to read the order of holes in a route=golf and assign values to their golf_hole= tag.To be able to dicern what info on the hole is for what course - append the name of the course as Namespace: before a particular tag. 
 - [ ] Gather some example clubs with complex arrangements of courses. Look that the tiles get correctly generated. 
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
-- [ ] Gather icons and typeface for the style.
+- [ ] Gather icons and vector patterns for the style.
 - [ ] Write the style.
 - [ ] Make a vector logo for the project.
 - [ ] Generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. Use swapspace?
 - [ ] Make a demo on [golftiles.org](https://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combining it with some other general vector tiles for location purposes in a Mapblibre layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
+- [ ] move the demo to github pages. Move the golfTiles.org domain to cloudflare to be able to serve a free bucket over it.
 - [ ] Move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles on golftiles.org. All free when the amount of requests is <10 Million each month. Maybe point a subdomain to docs.golftiles.org to point to a github pages?
 - [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages!
 - [ ] Add [Mapterhorn](https://mapterhorn.com/) pmtiles as DEM data to the demo viewer.

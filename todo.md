@@ -1,7 +1,8 @@
 Take more care in placing the stuff into new layers of the schema to be able to render them in the right order.
 
+Make a script to import the source and layers from one of OpenFreeMap and set that as a "backgrounds/base" layer on init.
 
-
+Download some OpenMapTiles pmtiles tiles for the "basemap" - Not tax OpenFreeMaps resources, donate to it. 
 
 
 add a store for the tilemaker for the big europe-run. 

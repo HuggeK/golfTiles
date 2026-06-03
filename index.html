@@ -31,8 +31,6 @@
             const protocol = new pmtiles.Protocol();
             maplibregl.addProtocol('pmtiles', protocol.tile);
 
-            const PMTILES_URL = 'https://golftiles.org/samples/golfTiles_sweden.pmtiles';
-
             // this is so we share one instance across the JS code and the map renderer
             protocol.add(p);
 
@@ -42,58 +40,22 @@
                         container: 'map',
                         zoom: h.maxZoom - 2,
                         center: [h.centerLon, h.centerLat],
-                        style: {
-                            version: 8,
-                            sources: {
-                                'golf_pmtiles_source': {
-                                    type: 'vector',
-                                    url: `pmtiles://${PMTILES_URL}`,
-                                    attribution: '© <a href="https://openstreetmap.org/copyright">OpenStreetMap</a>'
-                                }
-                            },
-                            layers: [
-                                {
-                                    'id': 'facilities',
-                                    'source': 'golf_pmtiles_source',
-                                    'source-layer': 'landuse',
-                                    'type': 'fill',
-                                    'paint': {
-                                        'fill-color': 'steelblue'
-                                    }
-                                },
-                                {
-                                    'id': 'golf',
-                                    'source': 'golf_pmtiles_source',
-                                    'source-layer': 'roads',
-                                    'type': 'line',
-                                    'paint': {
-                                        'line-color': 'black'
-                                    }
-                                },
-                                {
-                                    'id': 'other',
-                                    'source': 'golf_pmtiles_source',
-                                    'source-layer': 'mask',
-                                    'type': 'fill',
-                                    'paint': {
-                                        'fill-color': 'white'
-                                    }
-                                }
-                            ]
-                        }
+                        style: 'https://golftiles.org/styles/golfTilesStyle.json'
+                        // Our golfTiles style Adds openFreeMaps MVT OpenMapTiles-schema mbtiles and the style:
+                        // https://tiles.openfreemap.org/styles/positron style 
+                        // To style features which are outside the golf course - fetching the mbtiles where our pmtiles with golf tags does not exist.
+                        // Research if mablibre will do the switch gracefully.
+
+                        // our style begins after the positron baselayers have been drawn. 
+                        
+                        // MAYBE add the positron style behind all my others styles:
+
+
+
+
                     });
                 });
-            
-
-
-
-            /*const map = new maplibregl.Map({
-                style: 'https://tiles.openfreemap.org/styles/liberty', // stylesheet location
-                center: [56.530181, 15.593376], // starting position [lng, lat]
-                zoom: 17, // starting zoom
-                container: 'map'
-            }); */
-
+                
 
         </script>
 
