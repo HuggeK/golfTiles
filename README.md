@@ -39,7 +39,7 @@ click tilemaker "https://github.com/systemed/tilemaker"
 click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
 ```
 
-## Development:
+## Development diary:
 I created a tag filter with the ways and relations with the leisure=golf_course, using the geojson did not work in using it with the extract command, but my fast look at the geojsons it looks like it can detect it so that was a good sanity-check that the tag-filter was succesfull when opening it in QGIS. So I did not use the export to geojson, but just used the two files. I was able to generate some PMtiles using the default OpenMapTiles schema which is included in the tileMaker repository. I then used the extract command with the tag filtered pbf file which was 618 kb. I first used the smart strategy, but that looks like it includes way to much data outside of the facilities. I then switched back to the complete_ways strategy and on the complete sweden export it took: 
 ```[ 0:09] Peak memory used: 4713 MBytes``` when running the Osmium-tool inside of WSL 2 on a Ubuntu 26.04 OS. The resulting file pbf was: ```6 279kb``` for Sweden. See the shell scripts in the repo.
 
@@ -47,12 +47,13 @@ I created a tag filter with the ways and relations with the leisure=golf_course,
 - [X] Figure out how to encode the two different tagging practices of tagging course(s) in a facility into the tiles. Using the ```route=golf```
 - [X] Write the basics of ```process.lua``` for tileMaker. Trying to gather as much features as I can think of. This can then be used when we adapt the code in the future for a dynamic tile server.
 - [X] Try to generate some samples.
+- [X] Put up some demo PMtiles on [golftiles.org](https://golftiles.org/)
 
-I configured my WSL2 ubuntu machine with 23 GiB of RAM and 7.8 GiB of ssd swapspace. When trying to run the entire europe-latest.osm.pbf my VM crashes. More investigation is needed, maybe
 
-I was benchmarking the geofabriks extract of 
+I configured my WSL2 ubuntu 26.04 VM with 23 GiB of RAM and 7.8 GiB of ssd swapspace. When trying to run the entire europe-latest.osm.pbf my VM crashes. More investigation is needed, maybe use more swapspace.
 
 It would have been good if I could write metadata when the tiles was generated and what extracts it is based upon on as metadata, I opened an [idea](https://github.com/systemed/tilemaker/discussions/911) in the discussion page of the tilemaker repository. It would be good if it could be fetched from the metadata of the .pbf files osmium has processed. It seems like the osmium-tool steps is removing the metadata. Seems like there was a [pull request](https://github.com/osmcode/libosmium/issues/241) which was merged, which adds this to libosmium. 
+
 
 
 <details>
@@ -546,17 +547,15 @@ Then run:
 
 # Next steps:
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
-- [ ] Put up finished PMtiles on [golftiles.org](https://golftiles.org/)
-- [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages!
 - [ ] Gather icons and typeface for the style.
 - [ ] Write the style.
 - [ ] Make a vector logo for the project.
-- [ ] Generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. 
-- [ ] If the size of the tiles is to large for my small web host, move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles. All free when the amount of requests is <10 Million each month.
+- [ ] Generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. Use swapspace?
 - [ ] Make a demo on [golftiles.org](https://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combining it with some other general vector tiles for location purposes in a Mapblibre layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
+- [ ] Move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles on golftiles.org. All free when the amount of requests is <10 Million each month. Maybe point a subdomain to docs.golftiles.org to point to a github pages?
+- [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages!
 - [ ] Add [Mapterhorn](https://mapterhorn.com/) pmtiles as DEM data to the demo viewer.
-- [ ] Add tilemaker as a git submodule to this project.
-- [ ] Create github actions, generating and publishing tiles to github pages if tiles <10 GB.
+- [ ] Create github actions, generating and publishing tiles to github pages of small extracts to fit <10 GB and 6h limit on runners.
 - [ ] (Maybe) package the solution to a docker container with all dependencies for the tools.
 
 
@@ -582,20 +581,19 @@ I will try to contact the following when I have a 1.0 release of some PMTiles an
 More suggestions welcome!
 
 
-# Help wanted!
-I would need help in any of the following areas: 
-- [ ] Writing more on the process.lua to pick out what features could occur inside of a golf course facility.,
-- [ ] Writing a Maplibre GL style for the tiles.
+# Contributions
+Especial help wanted on the following areas:
+- [ ] Improving the Maplibre GL style.
 - [ ] Writing a basic course viewer using some web framework together with Maplibre GL JS. Especially interesting would be to consume the route=golf course data in the tiles to be able to chose as particular course and animate through it when the facility have more than one course.
-- [ ] Import golf features into PostGIS database,
+- [ ] Import golf features into PostGIS database, start working on the continuous update tileserver.
 - [ ] Generate features on the fly using this PostGIS database. 
 - [ ] Serving tiles using this tileserver.
 - or if you have something else you want to help out with, just drop an issue or submit a pull request.
 
-You can start and look at the [tilemaker/process.lua](tilemaker/process.lua) for what keys and improve it by adding more keys and logic you can find inside of a [Tag:leisure=golf_course](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course)
+You can start and look at the [tilemaker/process.lua](tilemaker/process.lua) for what keys and improve it by adding more keys and logic you can find inside of a [Tag:leisure=golf_course](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course) Or if you just want to suggest a key to be added you can just suggest in the Discussion page of this repository with category: [New Keys](https://github.com/HuggeK/golfTiles/discussions/categories/new-keys).
 
 # Attribution:
-Using this code and style should be attributed to golfTiles. Tiles generated by the schema is attributed to "[golftiles.org](https://golftiles.org/). OpenStreetMap contributors". and link to openstreetmap.org/copyright and this repository. If you are using Maplibre Gl JS, it can fetch the attribution from the tiles themselves as defined in [tilemaker/config.json](tilemaker/config.json)
+Using this code and style should be attributed to golfTiles. Tiles generated by the schema is attributed to "[golftiles.org](https://golftiles.org/). OpenStreetMap contributors". and link to openstreetmap.org/copyright. If you are using Maplibre GL JS, it can fetch the attribution from the tiles themselves as defined in [tilemaker/config.json](tilemaker/config.json)
 
 
 # License:
