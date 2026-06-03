@@ -16,7 +16,7 @@ osmium merge data/processed/sorted.*.pbf -o data/processed/merged.osm.pbf
 
 osmium tags-filter -v --output=data/processed/golfcourses.mask.osm.pbf data/processed/merged.osm.pbf wr/leisure=golf_course
 
-osmium extract -O --polygon=data/processed/golfcourses.mask.osm.pbf --strategy=smart -S types=any --set-bounds --output=data/processed/extract.osm.pbf data/processed/merged.osm.pbf # -O is allowing overwrites.
+osmium extract -O --polygon=data/processed/golfcourses.mask.osm.pbf --strategy=complete_ways -S types=any --set-bounds --output=data/processed/extract.osm.pbf data/processed/merged.osm.pbf # -O is allowing overwrites.
 # --Strategy=complete_ways could also be used.
 
 # Maybe run osmium renumber here to be able to run tilemaker with --compact. 
