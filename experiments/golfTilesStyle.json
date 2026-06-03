@@ -1,0 +1,44 @@
+{
+    "version": 8,
+    "name": "golfTiles",
+    "sources": {
+        "golfTiles_pmtiles_source": {
+            "type": "vector",
+            "url": "pmtiles://https://golftiles.org/samples/golfTiles_sweden.pmtiles",
+            "attribution": "© <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>"
+        },
+        "openFreeMap_openmaptiles_source": {
+        "type": "vector",
+        "url": "https://tiles.openfreemap.org/planet"
+        }
+    },
+    "layers:": [
+        {
+            "id": "facilities",
+            "source": "golf_pmtiles_source",
+            "source-layer": "landuse",
+            "type": "fill",
+            "paint": {
+                "fill-color": "steelblue"
+            }
+        },
+        {
+            "id": "golf",
+            "source": "golf_pmtiles_source",
+            "source-layer": "roads",
+            "type": "line",
+            "paint": {
+                "line-color": "black"
+            }
+        },
+        {
+            "id": "other",
+            "source": "golf_pmtiles_source",
+            "source-layer": "mask",
+            "type": "fill",
+            "paint": {
+                "fill-color": "white"
+            }
+        }
+    ]
+}
