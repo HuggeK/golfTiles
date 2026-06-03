@@ -1,12 +1,8 @@
-
 -- TODO research how we best represent different tee colors and update the wiki!
 
 add a store for the tilemaker for the big europe-run. 
 
-Use high_resolution in the config file.
-
 TODO:
-Fix AttributeInteger validations in lua. 
 Write all ways which have wrong values in them into some file which I can upload if
 someone wants to consume and fix it, to get the data out of this project to fix the data
 
@@ -15,8 +11,6 @@ someone wants to consume and fix it, to get the data out of this project to fix 
 TODO maybe clip the pbf file again to get rid of these wast areas which strecthes outside of the course boundary?
 
 TODO is to explain all the chosen configurations in a .md file.
-
-
 
 
 

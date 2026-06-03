@@ -93,28 +93,37 @@ end
 --someone wants to consume and fix it, to get the data out of this project to fix the data
 -- If it is not an Integer - it will NOT be imported, fix data in OSM.
 local function set_AttributeInteger_and_log(attributenkey, value)
-	local num = tonumber(value)
+	local num = math.tointeger(value) -- requires Lua 5.3+
 	if num then
 		AttributeInteger(attributenkey, num)
 	else
 		local type = OsmType()
-		print("Invalid integer for "..attributenkey..": "..value)
 		if type == "node" then
-			print("Invalid integer for "..type.." "..Id().." "..attributenkey.."="..value )
+			print("Invalid integer: "..attributenkey.."="..value.."|"..type.." "..Id())
 			-- TODO log to some file to process.
 		elseif type == "way" then
-			print("Invalid integer for "..type.." "..Id().." "..attributenkey.."="..value )
+			print("Invalid integer: "..attributenkey.."="..value.."|"..type.." "..Id())
 			-- TODO log to some file to process.
 		else
-			print("Invalid integer for "..type.." "..Id().." "..attributenkey.."="..value )
+			print("Invalid integer: "..attributenkey.."="..value.."|"..type.." "..Id())
 			-- TODO log to some file to process.
 		end
 	end
 end
 
+-- Mainly used for key:tee which could both be numbers or a string:
+local function set_AttributeInteger_or_Attribute(attributenkey, value)
+	local num = math.tointeger(value) -- requires Lua 5.3+
+	if num then
+		AttributeInteger(attributenkey, num)
+	else
+		Attribute(attributenkey, value)
+	end
+end
+
 
 -- Nodes will only be processed if one of these keys is present. This reduces memory drastically as stated by the documentation.
-node_keys = { "golf", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
+node_keys = { "golf", "tee", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
 				"male", "female", "unisex", "toilets", "emergency", "man_made", "shop", "leisure",
 				"tourism", "entrance", "name", "short_name", "operator", "opening_hours", "wikidata", "phone", "website",
 				"addr:postcode", "addr:city", "addr:street", "access", "sport" }
@@ -128,7 +137,15 @@ function node_function(node)
 	if golf ~= "" then
 		Layer("golf") -- This is what actually puts it in the tile. Remember: First layer and then attributes.
 		Attribute("golf", golf) -- key=value pairs.
-		-- "General" common "extra" attributes between nodes & ways/areas:
+		-- Add Key:tee data. NOTE it is preferable to map a tee as an area (closed way) instead! 
+		-- If you want you could map all tees which are nodes into areas!s
+		if golf == "tee" then
+			local tee = Find("tee")
+			if tee ~= "" then
+				set_AttributeInteger_or_Attribute("tee", tee)
+			end
+		end
+		-- "General" common "extra" attributes between nodes & ways/areas:s
 		general_attributes()
 	end
 	local natural = Find("natural") -- mainly for natural=tree
@@ -271,7 +288,7 @@ function node_function(node)
 end
 
 -- list of possible keys or key-value pairs to speed up/use less memory:
-way_keys = {"leisure", "golf", "par", "handicap", "dist", "golf:course:name", "golf:course", "golf:par", "ref", "landuse",
+way_keys = {"leisure", "golf", "tee", "par", "handicap", "dist", "golf:course:name", "golf:course", "golf:par", "ref", "landuse",
 			"leaf_cycle", "leaf_type", "barrier", "fence_type", "material", "building", "highway",
 			"area:highway", "man_made", "waterway", "natural", "surface", "tourism", "name", "short_name",
 			"operator", "opening_hours", "wikidata", "phone", "website", "addr:postcode", "addr:city",
@@ -405,6 +422,15 @@ function way_function()
 		elseif golf == "path" then
 			Layer("golf", false)
 			Attribute("golf", "path")
+		-- Add Key:tee data. NOTE it is preferable to map a tee as an area (closed way) instead! 
+		-- If you want you could map all tees which are nodes into areas!s
+		elseif golf == "tee" then
+			Layer("golf", true)
+			Attribute("golf", golf)
+			local tee = Find("tee")
+			if tee ~= "" then
+				set_AttributeInteger_or_Attribute("tee", tee)
+			end
 		else -- For all other golf features which are ways which are not specified in this schema above, assume they are areas.
 			Layer("golf", true)
 			Attribute("golf", golf)
@@ -417,6 +443,7 @@ function way_function()
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 	end
+
 
 	--Landuse:
 
