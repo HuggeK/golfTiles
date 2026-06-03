@@ -547,6 +547,8 @@ Then run:
 
 
 # Next steps:
+- [ ] Write code to read the order of holes in a route=golf and assign values to their golf_hole= tag.To be able to dicern what info on the hole is for what course - append the name of the course as Namespace: before a particular tag. 
+- [ ] Gather some example clubs with complex arrangements of courses. Look that the tiles get correctly generated. 
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
 - [ ] Gather icons and typeface for the style.
 - [ ] Write the style.

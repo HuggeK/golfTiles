@@ -1,4 +1,8 @@
--- TODO research how we best represent different tee colors and update the wiki!
+Take more care in placing the stuff into new layers of the schema to be able to render them in the right order.
+
+
+
+
 
 add a store for the tilemaker for the big europe-run. 
 
@@ -28,6 +32,14 @@ Add Wheelchair access info as generic attributes for all nodes and or ways and p
 
 
 TODO document the architect tag for a whole course and also individual courses on the wiki.
+
+
+Write code to read the order of holes in a route=golf and assign values to their golf_hole= tag. 
+To be able to dicern what info on the hole is for what course - append the name of the course as Namespace: before a particular tag. 
+
+
+Or maybe Create a new multi line with all the holes for a particular route=golf and put the golf course tag on that?
+
 
 
 # Regarding the course information:
