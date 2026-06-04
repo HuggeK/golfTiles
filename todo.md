@@ -5,10 +5,13 @@ Make a script to import the source and layers from one of OpenFreeMap and set th
 Download some OpenMapTiles pmtiles tiles for the "basemap" - Not tax OpenFreeMaps resources, donate to it. 
 
 
+TODO is to set different kind of geometries in different layers in the process.lua in the Schema/tiles to be able to apply a style based on fill or line etc. 
+
+
 Document how to set up maputnik locally to improve the style. 
 
 
-Insert the positron style pmtiles in a golfTileStyle+
+Insert the positron style pmtiles in a golfTileStyle+positron.style.
 
 Give credit for the respectice licenses for openfreemaps etc and other tools used. 
 
