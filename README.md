@@ -585,6 +585,8 @@ More suggestions welcome!
 
 
 # Contributions
+I would advise to wait until a first 0.1 release has been released until begining to help, due to the schema can rapidly change before a style has been developed.
+
 Especial help wanted on the following areas:
 - [ ] Improving the Maplibre GL style.
 - [ ] Writing a basic course viewer using some web framework together with Maplibre GL JS. Especially interesting would be to consume the route=golf course data in the tiles to be able to chose as particular course and animate through it when the facility have more than one course.
