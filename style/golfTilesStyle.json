@@ -7,7 +7,7 @@
             "url": "pmtiles://https://golftiles.org/samples/golfTiles_sweden.pmtiles",
             "attribution": "© <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>"
         }
-    },
+    }, 
     "layers": [
         {
             "id": "facilities",

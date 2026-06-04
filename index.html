@@ -42,21 +42,9 @@
                 p.getHeader().then(h => {
                     const map = new maplibregl.Map({
                         container: 'map',
-                        zoom: h.maxZoom - 2,
-                        center: [h.centerLon, h.centerLat],
+                        zoom: h.maxZoom - 2, // golfTiles is rendered at max zoom of 14.
+                        center: [15.59411, 56.52839], //Centers on Emmaboda GK.
                         style: 'https://golftiles.org/styles/golfTilesStyle.json'
-                        // Our golfTiles style Adds openFreeMaps MVT OpenMapTiles-schema mbtiles and the style:
-                        // https://tiles.openfreemap.org/styles/positron style 
-                        // To style features which are outside the golf course - fetching the mbtiles where our pmtiles with golf tags does not exist.
-                        // Research if mablibre will do the switch gracefully.
-
-                        // our style begins after the positron baselayers have been drawn. 
-                        
-                        // MAYBE add the positron style behind all my others styles:
-
-
-
-
                     });
                 });
                 

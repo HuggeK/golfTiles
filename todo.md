@@ -52,16 +52,32 @@ Or maybe Create a new multi line with all the holes for a particular route=golf 
 
 
 
+    },
+    "openFreeMap_openmaptiles_source": {
+    "type": "vector",
+    "url": "https://tiles.openfreemap.org/planet"
+    }
+
+Sign up for cloudflare R2 to be able to use maputnik website in the browser to be able to develop the style with CORS.
+
+
+                        // Our golfTiles style Adds openFreeMaps MVT OpenMapTiles-schema mbtiles and the style:
+                        // https://tiles.openfreemap.org/styles/positron style 
+                        // To style features which are outside the golf course - fetching the mbtiles where our pmtiles with golf tags does not exist.
+                        // Research if mablibre will do the switch gracefully.
+
+                        // our style begins after the positron baselayers have been drawn. 
+                        
+                        // MAYBE add the positron style behind all my others styles:
+
+So develop the core golfTiles style and then also a "golfTilesStyle + Positron"-style to be used with some .mbtiles source like OpenFreeMap or host your own OpenMapTiles tiles in the OpenMapTiles schema. 
+
+
+
+
 # Regarding the course information:
 
 -- Add the attributes from the relation into their respective tags. 
 
 
 -- TODO is to document how to map penalty areas with the old water_hazard and lateral_water_hazard with other surface tags to include the surface tag for like vulcanic rock etc.
-
-
-    },
-    "openFreeMap_openmaptiles_source": {
-    "type": "vector",
-    "url": "https://tiles.openfreemap.org/planet"
-    }
