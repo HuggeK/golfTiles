@@ -8,10 +8,10 @@
             "attribution": "© <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>"
         }
     },
-    "layers:": [
+    "layers": [
         {
             "id": "facilities",
-            "source": "golf_pmtiles_source",
+            "source": "golfTiles_pmtiles_source",
             "source-layer": "facilities",
             "type": "fill",
             "paint": {
@@ -20,7 +20,7 @@
         },
         {
             "id": "golf",
-            "source": "golf_pmtiles_source",
+            "source": "golfTiles_pmtiles_source",
             "source-layer": "golf",
             "type": "line",
             "paint": {
@@ -29,7 +29,7 @@
         },
         {
             "id": "other",
-            "source": "golf_pmtiles_source",
+            "source": "golfTiles_pmtiles_source",
             "source-layer": "other",
             "type": "fill",
             "paint": {
