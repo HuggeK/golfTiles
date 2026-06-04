@@ -5,6 +5,15 @@ Make a script to import the source and layers from one of OpenFreeMap and set th
 Download some OpenMapTiles pmtiles tiles for the "basemap" - Not tax OpenFreeMaps resources, donate to it. 
 
 
+Document how to set up maputnik locally to improve the style. 
+
+
+Insert the positron style pmtiles in a golfTileStyle+
+
+Give credit for the respectice licenses for openfreemaps etc and other tools used. 
+
+
+
 add a store for the tilemaker for the big europe-run. 
 
 TODO:
@@ -49,3 +58,10 @@ Or maybe Create a new multi line with all the holes for a particular route=golf 
 
 
 -- TODO is to document how to map penalty areas with the old water_hazard and lateral_water_hazard with other surface tags to include the surface tag for like vulcanic rock etc.
+
+
+    },
+    "openFreeMap_openmaptiles_source": {
+    "type": "vector",
+    "url": "https://tiles.openfreemap.org/planet"
+    }
