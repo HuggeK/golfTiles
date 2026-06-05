@@ -552,6 +552,7 @@ Then run:
 - [ ] Optimize the generation, sort the id´s with ```osmium renumber``` and tilemaker´s ```--compact```
 - [ ] Gather icons and vector patterns for the style.
 - [ ] Write the style.
+- - It looks like the example styles which is bundled with Maputnik is used Deprecated ways of writing the code, see https://maplibre.org/maplibre-style-spec/deprecations/ . I need to thourogly study how to write effective styles and adapt the vector tile generation for one layer one type of geometry it looks like. 
 - [ ] Make a vector logo for the project.
 - [ ] Generate the whole world, maybe split up it into files and combine it all using osmium for the continents manually downloaded. Use swapspace?
 - [ ] Make a demo on [golftiles.org](https://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combining it with some other general vector tiles for location purposes in a Mapblibre layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
