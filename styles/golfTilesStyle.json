@@ -10,18 +10,52 @@
     }, 
     "layers": [
         {
-            "id": "facilities",
+            "id": "facility_border",
             "source": "golfTiles_pmtiles_source",
             "source-layer": "facilities",
-            "type": "fill",
+            "type": "line",
             "paint": {
-                "fill-color": "steelblue"
+                "line-color": "#223631",
+                "line-width": 2,
+                "line-opacity": 0.8
             }
         },
         {
-            "id": "golf",
+            "id": "facility_text",
             "source": "golfTiles_pmtiles_source",
-            "source-layer": "golf",
+            "source-layer": "facilities",
+            "type": "symbol",
+            "layout": {
+                "text-field": "{name}",
+                "text-font": ["Open Sans Regular"],
+                "text-size": 14,
+                "text-variable-anchor": ["center", "top", "bottom", "left", "right"]
+            },
+            "paint": {
+                "text-color": "#FFFFFF"
+            }
+        },
+        {
+            "id": "rough",
+            "source": "golfTiles_pmtiles_source",
+            "source-layer": "golf_polygons",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "rough"]
+            ],
+            "paint": {
+                "fill-color": "6f7d56"
+            }
+        },
+        
+        
+
+
+        {
+            "id": "golf-points",
+            "source": "golfTiles_pmtiles_source",
+            "source-layer": "golf_points",
             "type": "line",
             "paint": {
                 "line-color": "black"
