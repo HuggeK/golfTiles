@@ -557,6 +557,8 @@ Then run:
 - [ ] Make a demo on [golftiles.org](https://golftiles.org/) showing of the PMtiles and style rendered using [MapLibre GL JS](https://maplibre.org/maplibre-gl-js/docs/). Combining it with some other general vector tiles for location purposes in a Mapblibre layer below. Possible could be: [openfreemap.org](https://openfreemap.org/) 
 - [ ] move the demo to github pages. Move the golfTiles.org domain to cloudflare to be able to serve a free bucket over it.
 - [ ] Move the domain to Cloudflare and setup a Cloudflare R2 bucket for the tiles on golftiles.org. All free when the amount of requests is <10 Million each month. Maybe point a subdomain to docs.golftiles.org to point to a github pages?
+- [ ] move the golftiles.org domain after 60 days from simply.com to cloudflare to be able to make the bucket public.
+- [ ] Crucial for Cloudflare: Write a Cron Triggered Worker to check say every hours which queries the bucket and if the free class B access requests is over some set level uses the R2 api to remove the custom domain on the bucket - to limit the amount of request to not having a astronimical cloud bill to not need to check it myself. When we then have found sponsors I could increase this ceeling of requests.
 - [ ] Document the tile schema like [shortbread-docs](https://github.com/shortbread-tiles/shortbread-docs) does, using Hugo to github pages!
 - [ ] Add [Mapterhorn](https://mapterhorn.com/) pmtiles as DEM data to the demo viewer.
 - [ ] Create github actions, generating and publishing tiles to github pages of small extracts to fit <10 GB and 6h limit on runners.
