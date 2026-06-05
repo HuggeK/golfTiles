@@ -79,7 +79,7 @@ golfTiles/
 │   ├── config.json/           # tilemaker config file, defining layers and metadata.
 │   └── process.lua/           # Process file which decides what should be included in the tiles in what layers and what vector attributes should be written to the features(Schema)
 ├── data/                      # Folder to place your extracts to generate tiles on.
-│   └── processed/             # Temporary folder used by the run_all.sh script for steps in the osmium 
+│   └── processed/             # Temporary folder used by the run_all.sh script for osmium-tool.
 ├── docs/                      # Documentation.
 ├── openfreemap-styles/        # Git Submodule of openfreemap-styles using the OpenMapTiles schema.
 ├── samples/                   # Some example .pmtiles
@@ -96,7 +96,7 @@ In the future one could maybe use a "dynamic" tile generator server such as:
 - osm2psql 
 - imposm3 
 - Martin. 
-To be able to do incremental updates, but this would be more complex and require server infrastructure. ([#21]) Thats where grants comes into the picture.
+To be able to do incremental updates, but this would be more complex and require server infrastructure. https://github.com/HuggeK/golfTiles/issues/21 Thats where grants comes into the picture.
 
 - Other future endeavors could also be to explore the new [MapLibre Tile (MLT)](https://github.com/maplibre/maplibre-tile-spec) to encode the DEM data from [Mapterhorn](https://mapterhorn.com/) directly into the tiles. 
 
@@ -105,8 +105,8 @@ I would advise to wait until a first 0.1 release has been released until beginni
 
 Especial help wanted on the following areas:
 - [ ] Improving the Maplibre GL style. 
-- [ ] Write a basic course viewer using some web framework together with Maplibre GL JS as a demo, only consuming data from the tiles themselves. Especially interesting would be to be able to chose as particular course and animate through each hole. ([#20])
-- [ ] Use a dynamic tile server instead of tilemaker. ([#21])
+- [ ] Write a basic course viewer using some web framework together with Maplibre GL JS as a demo, only consuming data from the tiles themselves. Especially interesting would be to be able to chose as particular course and animate through each hole. https://github.com/HuggeK/golfTiles/issues/20
+- [ ] Use a dynamic tile server instead of tilemaker. https://github.com/HuggeK/golfTiles/issues/21
 
 
 # Attribution:
