@@ -4,13 +4,26 @@
     "sources": {
         "golfTiles_source": {
             "type": "vector",
-            "url": "pmtiles://https://huggek.github.io/golfTiles/samples/golfTiles_se_dk_fi.pmtiles",
+            "url": "pmtiles://https://golftiles.org/samples/golfTiles_se_dk_fi.pmtiles",
             "attribution": "© <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>. Schema and style <a href='https://github.com/HuggeK/golfTiles'>golfTiles</a>"
         }
     },
     "layers": [
         {
-            "id": "rough",
+            "id": "ranges",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "driving_range"]
+            ],
+            "paint": {
+                "fill-color": "#6eb438"
+            }
+        },
+        {
+            "id": "roughs",
             "source": "golfTiles_source",
             "source-layer": "golf_areas",
             "type": "fill",
@@ -19,11 +32,186 @@
                 ["==", ["get", "golf"], "rough"]
             ],
             "paint": {
-                "fill-color": "#6f7d56"
+                "fill-color": "#4f9009"
             }
         },
         {
-            "id": "facility_border",
+            "id": "fairways",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "fairway"]
+            ],
+            "paint": {
+                "fill-color": "#6cc30d"
+            }
+        },
+        {
+            "id": "bunkers",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "bunker"]
+            ],
+            "paint": {
+                "fill-color": "#e5d7a8"
+            }
+        },
+        {
+            "id": "tees_areas",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "tee"]
+            ],
+            "paint": {
+                "fill-color": "#6cc30d"
+            }
+        },
+        {
+            "id": "tees_borders",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "line",
+            "filter": ["has", "tee"],
+            "paint": {
+                "line-color": [
+                    "coalesce",
+                    ["get", "tee"],
+                    "#000000"
+                ]
+            }
+        },
+        {
+            "id": "greens",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "green"]
+            ],
+            "paint": {
+                "fill-color": "#007e46"
+            }
+        },
+        {
+            "id": "trees_areas",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "all",
+                ["==", ["get", "landuse"], "forest"]
+            ],
+            "paint": {
+                "fill-color": "#1a6b3c"
+            }
+        },
+        {
+            "id": "trees",
+            "source": "golfTiles_source",
+            "source-layer": "golf_points",
+            "type": "circle",
+            "filter": [
+                "all",
+                ["==", ["get", "natural"], "tree"]
+            ],
+            "paint": {
+                "circle-color": "#1a6b3c"
+                
+            }
+        },
+        {
+            "id": "penalty_areas",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "in",
+                ["get", "golf"],
+                ["literal", ["water_hazard", "lateral_water_hazard"]]
+            ],
+            "paint": {
+                "fill-color": "#65bff1"
+            }
+        },
+        {
+            "id": "penalty_areas_borders",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "line",
+            "filter": [
+                "in",
+                ["get", "golf"],
+                ["literal", ["water_hazard", "lateral_water_hazard"]]
+            ],
+            "paint": {
+                "line-width": 2,
+                "line-color": [
+                "match",
+                ["get", "golf"],
+                "water_hazard", "#f9dc30",
+                "lateral_water_hazard", "#a81c22",
+                "#257b9f"
+                ]
+            }
+        },
+        {
+            "id": "out_of_bounds_lines",
+            "source": "golfTiles_source",
+            "source-layer": "golf_lines",
+            "type": "line",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "hole"]
+            ],
+            "paint": {
+                "line-color": "#faf9f9"
+            }
+        },
+        {
+            "id": "hole_lines",
+            "source": "golfTiles_source",
+            "source-layer": "golf_lines",
+            "type": "line",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "hole"]
+            ],
+            "paint": {
+                "line-color": "#1a3002"
+            }
+        },
+        {
+            "id": "golf_pins",
+            "source": "golfTiles_source",
+            "source-layer": "golf_points",
+            "type": "circle",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "pin"]
+            ],
+            "paint": {
+                "circle-color": "#faf9f9",
+                "circle-radius": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    10, 2,
+                    15, 2,
+                    20, 2
+                ]
+            }
+        },
+        {
+            "id": "facility_borders",
             "source": "golfTiles_source",
             "source-layer": "facilities",
             "type": "line",
@@ -34,12 +222,28 @@
             }
         },
         {
-            "id": "facility_text",
+            "id": "facility_text_on_borders",
             "source": "golfTiles_source",
             "source-layer": "facilities",
             "type": "symbol",
             "layout": {
-                "text-field": "{name}",
+                "text-field": ["get", "name"],
+                "text-font": ["Open Sans Regular"],
+                "text-size": 14,
+                "symbol-placement": "line",
+                "symbol-spacing": 250
+            },
+            "paint": {
+                "text-color": "#223631"
+            }
+        },
+        {
+            "id": "facility_text_midpoints",
+            "source": "golfTiles_source",
+            "source-layer": "facilities",
+            "type": "symbol",
+            "layout": {
+                "text-field": ["get", "name"],
                 "text-font": ["Open Sans Regular"],
                 "text-size": 14,
                 "text-variable-anchor": ["center", "top", "bottom", "left", "right"]
