@@ -22,6 +22,8 @@
                 <li><a href="samples/golfTiles_sweden.pmtiles" download>samples/golfTiles_sweden.pmtiles</a></li>
                 <li><a href="samples/golfTiles_united-kingdom.pmtiles" download>samples/golfTiles_united-kingdom.pmtiles</a></li>
             </ul>
+        <p>If you want to inspect the tiles themselves I can recommend downloading the samples and use <a href="https://pmtiles.io/">pmtiles.io</a>.</p>
+
 
         <h2>Initial Demo using Maplibre GL JS over Sweden, finland and Denmark: </h2>
         <p>Extract from 260601. Initial position is over course: <a href="https://www.openstreetmap.org/way/101624685">Way: Emmaboda Golfklubb (101624685)</a> </p>
@@ -31,7 +33,7 @@
             const protocol = new pmtiles.Protocol();
             maplibregl.addProtocol('pmtiles', protocol.tile);
 
-            const PMTILES_URL = 'https://golftiles.org/samples/golfTiles_sweden.pmtiles'; // will this add source two times? both in style and in new?
+            const PMTILES_URL = 'https://golftiles.org/samples/golfTiles_se_dk_fi.pmtiles'; // will this add source two times? both in style and in new?
 
             const p = new pmtiles.PMTiles(PMTILES_URL);
 
