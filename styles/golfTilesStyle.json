@@ -6,7 +6,11 @@
             "type": "vector",
             "url": "pmtiles://https://golftiles.org/samples/golfTiles_se_dk_fi.pmtiles",
             "attribution": "© <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>. Schema and style <a href='https://github.com/HuggeK/golfTiles'>golfTiles</a>"
-        }
+        },
+        "terrainSource": {
+                "type": "raster-dem",
+                "url": "https://tiles.mapterhorn.com/tilejson.json"
+            }
     },
     "layers": [
         {
@@ -252,5 +256,11 @@
                 "text-color": "#000000"
             }
         }
-    ]
+    ],
+    "terrain": {
+        "source": "terrainSource",
+        "exaggeration": 1.5
+    },
+    "sky": {}
+
 }
