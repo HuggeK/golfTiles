@@ -4,7 +4,7 @@
     "sources": {
         "golfTiles_source": {
             "type": "vector",
-            "url": "pmtiles://https://golftiles.org/samples/golfTiles_se_dk_fi.pmtiles",
+            "url": "pmtiles://https://huggek.github.io/golfTiles/samples/golfTiles_se_dk_fi.pmtiles",
             "attribution": "© <a href='https://openstreetmap.org/copyright'>OpenStreetMap</a>. Schema and style <a href='https://github.com/HuggeK/golfTiles'>golfTiles</a>"
         }
     },
