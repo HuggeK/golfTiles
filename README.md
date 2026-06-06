@@ -63,7 +63,8 @@ Then run:
 ## Grants and funding
 I registred the domain https://golftiles.org to be able to serve the tiles through the Cloudflare R2 bucket under that domain for the initial PMtiles offering. When we then have something concrete to show grant organisations that this would be something good for the golf community as a whole, we could ask for some money for compute and serve the tiles publicly.
 
-I will try to contact the following when I have a 1.0 release of some PMTiles and a style to show off:
+I will try to contact the following in the future:
+- The R&A. Asked by email on 2026-06-06. 
 - [Allmänna arvsfonden](https://www.arvsfonden.se/). 
 - American Golf Industry Coalitions [GRASSROOTS GRANTS PROGRAM](https://www.golfcoalition.org/grassrootsgrants).
 - [Lnu Innovation](https://lnu.se/mot-linneuniversitetet/samarbeta-med-oss/lnu-innovation/)
