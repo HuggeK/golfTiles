@@ -1,7 +1,11 @@
 # Contributing
 
-
 You can start and look at the [tilemaker/process.lua](tilemaker/process.lua) for what keys and improve it by adding more keys and logic you can find inside of a [Tag:leisure=golf_course](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course) Or if you just want to suggest a key to be added you can just suggest in the Discussion page of this repository with category: [New Keys](https://github.com/HuggeK/golfTiles/discussions/categories/new-keys).
+
+
+
+## In regards to the use of LLM´s in the development process
+If you are using LLM´s tools for development/issue-tracking/discussions, please sign of with both your name and the name of the LLM. It is both a question of integrity and it is easier for other contributors to be more cautious about hallucinated text. Please add the ```Co-authored-by``` trailer in your commit message if you are using a LLM to write all the code.
 
 
 
