@@ -16,8 +16,41 @@
 
         <p>Link to github repo: <a href="https://github.com/HuggeK/golfTiles">https://github.com/HuggeK/golfTiles</a></p>
 
-        <p>To see temporary example files and temporary demo due to github pages not enabling CORS, go to <a href="https://golftiles.org">https://golftiles.org</a></p>
-    
+        <h3>Example PMtiles: </h3>
+        <ul>
+            <li><a href="https://huggek.github.io/golfTiles/samples/golfTiles_se_dk_fi.pmtiles" download>samples/golfTiles_se_dk_fi.pmtiles</a></li>
+            <li><a href="https://huggek.github.io/golfTiles/samples/golfTiles_sweden.pmtiles" download>samples/golfTiles_sweden.pmtiles</a></li>
+        </ul>
+
+        <p>If you want to inspect the tiles themselves I can recommend downloading the samples and use <a href="https://pmtiles.io/">pmtiles.io</a>.</p>
+
+        <p>Domain: <a href="https://golftiles.org">golftiles.org</a></p>
+
+        <h2>Initial Demo using Maplibre GL JS over Sweden, finland and Denmark: </h2>
+        <p>Extract from 260601. Initial position is over course: <a href="https://www.openstreetmap.org/way/101624685">Way: Emmaboda Golfklubb (101624685)</a> </p>
+        <div id='map' style='width: 400px; height: 300px;'></div>
+        <script type='module'>
+            // add the PMTiles plugin to the maplibregl global.
+            const protocol = new pmtiles.Protocol();
+            maplibregl.addProtocol('pmtiles', protocol.tile);
+
+            const PMTILES_URL = 'https://huggek.github.io/golfTiles/samples/golfTiles_se_dk_fi.pmtiles'; // will this add source two times? both in style and in new?
+
+            const p = new pmtiles.PMTiles(PMTILES_URL);
+
+            // this is so we share one instance across the JS code and the map renderer
+            protocol.add(p);
+
+            // we first fetch the header so we can get the center lon, lat of the map.
+                p.getHeader().then(h => {
+                    const map = new maplibregl.Map({
+                        container: 'map',
+                        zoom: h.maxZoom - 2, // golfTiles is rendered at max zoom of 14.
+                        center: [15.59411, 56.52839], //Centers on Emmaboda GK.
+                        style: 'https://huggek.github.io/golfTiles/styles/golfTilesStyle.json'
+                    });
+                });
+        </script>
 
     </body>
 </html>

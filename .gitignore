@@ -2,4 +2,4 @@
 *.pmtiles
 /.vscode
 *:Zone.Identifier
-!/github-pages/samples/*.pmtiles
+!/docs/samples/*.pmtiles

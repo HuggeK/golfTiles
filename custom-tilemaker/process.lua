@@ -135,10 +135,10 @@ function node_function(node)
 	-- Points to go to the "golf" layer. Features on the course itself.
 	local golf = Find("golf")
 	if golf ~= "" then
-		Layer("golf") -- This is what actually puts it in the tile. Remember: First layer and then attributes.
+		Layer("golf_points") -- This is what actually puts it in the tile. Remember: First layer and then attributes.
 		Attribute("golf", golf) -- key=value pairs.
 		-- Add Key:tee data. NOTE it is preferable to map a tee as an area (closed way) instead! 
-		-- If you want you could map all tees which are nodes into areas!s
+		-- If you want you could map all tees which are nodes into areas which would provide better data.
 		if golf == "tee" then
 			local tee = Find("tee")
 			if tee ~= "" then
@@ -148,9 +148,10 @@ function node_function(node)
 		-- "General" common "extra" attributes between nodes & ways/areas:s
 		general_attributes()
 	end
+
 	local natural = Find("natural") -- mainly for natural=tree
 	if natural ~= "" then
-		Layer("golf")
+		Layer("golf_points")
 		Attribute("natural", natural)
 		-- Adds tree information:
 		if natural == "tree" then
@@ -170,7 +171,7 @@ function node_function(node)
 	-- Add signs and signposts:
 	local information = Find("information") -- Mainly for information=guideposts and other signs on the course.
 	if information ~= "" then
-		Layer("golf")
+		Layer("golf_points")
 		Attribute("information", information)
 		 --TODO is add the descriptions and the destinations for these signs.
 		-- "General" common "extra" attributes between nodes & ways/areas:
@@ -179,7 +180,7 @@ function node_function(node)
 	-- Add amenity nodes:
 	local amenity = Find("amenity") -- Mainly for amenity=bench and trashcans.
 	if amenity ~= "" then  -- All amenity-tags.
-		Layer("golf")
+		Layer("golf_points")
 		Attribute("amenity", amenity)
 		-- amenity=vending_machine logic, vending=golf_balls
 		if amenity == "vending_machine" then
@@ -209,7 +210,7 @@ function node_function(node)
 	-- toilets key for nodes: 
 	local toilets = Find("toilets")
 	if toilets ~= "" then
-		Layer("golf")
+		Layer("golf_points")
 		Attribute("toilets", toilets)
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
@@ -218,7 +219,7 @@ function node_function(node)
 	-- Add AED´s:
 	local emergency = Find("emergency")
 	if emergency == "defibrillator" then
-		Layer("golf")
+		Layer("golf_points")
 		Attribute("emergency", "defibrillator")
 		-- TODO add all Important tags here too on it if they exist.
 
@@ -226,13 +227,10 @@ function node_function(node)
 		general_attributes()
 	end
 
-	-- Points go to a "other" layer:
-	-- Features which can be all around the course but is not only found on the course itself.
-	-- Ask yourself: "Is this something that is not inherently interesting to people who not play golf? "
 
 	local man_made = Find("man_made") -- Mainly for man_made=water_tap 
 	if man_made ~= "" then
-		Layer("other")
+		Layer("golf_points")
 		Attribute("man_made", man_made)
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
@@ -241,21 +239,33 @@ function node_function(node)
 	-- add golf shops, the shop at the Masters etc.
 	local shop = Find("shop")
 	if shop ~= "" then
-		Layer("other")
+		Layer("golf_points")
 		Attribute("shop", shop)
 		Attribute("name", Find("name")) -- assume all shops have name.
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 	end
 
-	-- Leisure-pois: (For example, leisure=firepit)
+	-- entrance for the buildings:
+	local entrance = Find("entrance")
+	if entrance ~= "" then
 
+		Layer("golf_points")
+		Attribute("entrance", entrance)
+		-- "General" common "extra" attributes between nodes & ways/areas:
+		general_attributes()
+	end
+
+	-- Points go to a "other" layer:
+	-- Features which can be inside of a golf course but is not related directly to golf.
+
+	-- Leisure-pois: (For example, leisure=firepit)
 	local leisure = Find("leisure")
 	if leisure ~= "" then
 		-- NOTE golf courses tagged as nodes will not be included because of the sensible choice to 
 		-- filter out all objects based on a mask constructed from the polygons of of the facilities.
 		if leisure ~= "golf_course" then
-			Layer("other")
+			Layer("other_points")
 			Attribute("leisure", leisure)
 			-- "General" common "extra" attributes between nodes & ways/areas:
 			general_attributes()
@@ -266,20 +276,8 @@ function node_function(node)
 	-- Campsites/huts which some golf clubs have inside of their facilities:
 	local tourism = Find("tourism")
 	if tourism ~= "" then
-		Layer("other")
+		Layer("other_points")
 		Attribute("tourism", tourism)
-		-- "General" common "extra" attributes between nodes & ways/areas:
-		general_attributes()
-	end
-
-
-	-- General tags for all nodes:
-
-	-- entrance for the buildings:
-	local entrance = Find("entrance")
-	if entrance ~= "" then
-		Layer("other")
-		Attribute("entrance", entrance)
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 	end
@@ -300,7 +298,7 @@ function way_function()
 
 	-- Ways and areas to go to a "golf" layer:
 
-	-- The main (multi)polygon facility, 0:
+	-- The main (multi)polygon facility:
 	local leisure = Find("leisure")
 	if leisure == "golf_course" then
 		Layer("facilities", true) -- Second parameter denotes true - it is an area, not a way.
@@ -329,7 +327,7 @@ function way_function()
 
 		-- Hole logic:
 		if golf == "hole" then
-			Layer("golf", false)
+			Layer("golf_lines", false)
 			Attribute("golf", "hole")
 			local par = Find("par")
 			if par ~= "" then
@@ -411,33 +409,30 @@ function way_function()
 				set_AttributeInteger_and_log("hole_number", ref) -- this is one of the few times a rename of the key in the tiles occur. More suitable with hole_number than generic ref.
 			end
 		elseif golf == "cartpath" then
-			Layer("golf", false)
+			Layer("golf_lines", false)
 			Attribute("golf", "cartpath")
 		--elseif golf == "path"
 			-- NOTE! That As discussed by people in the talk page of this tag this could be superfluous, 
 			-- as the wiki states:  "It is likely that standard tags highway=path and highway=footway should be used instead."
 		elseif golf == "out_of_bounds" then
-			Layer("golf", false)
+			Layer("golf_lines", false)
 			Attribute("golf", "out_of_bounds")
 		elseif golf == "path" then
-			Layer("golf", false)
+			Layer("golf_lines", false)
 			Attribute("golf", "path")
-		-- Add Key:tee data. NOTE it is preferable to map a tee as an area (closed way) instead! 
-		-- If you want you could map all tees which are nodes into areas!s
+		-- Add Key:tee data. NOTE it is preferable to map a tee as an area (closed way).
 		elseif golf == "tee" then
-			Layer("golf", true)
+			Layer("golf_areas", true)
 			Attribute("golf", golf)
 			local tee = Find("tee")
 			if tee ~= "" then
 				set_AttributeInteger_or_Attribute("tee", tee)
 			end
 		else -- For all other golf features which are ways which are not specified in this schema above, assume they are areas.
-			Layer("golf", true)
+			Layer("golf_areas", true)
 			Attribute("golf", golf)
-			-- How will golf=clubhouse be handled? duplicate data as this is written now that it is both a building and a golf=clubhouse?
-			-- TODO research how we best represent different tee colors/numbers and update the wiki!
 		end
-		-- generic attributes which all golf features could have:
+		-- Generic attributes which all golf features could have:
 
 		get_architect()
 		-- "General" common "extra" attributes between nodes & ways/areas:
@@ -449,7 +444,7 @@ function way_function()
 
 	local landuse = Find("landuse")
 	if landuse ~= "" then
-		Layer("golf", true) -- Always an area.
+		Layer("golf_areas", true) -- Always an area.
 		Attribute("landuse", landuse)
 
 		-- Optional leaf information.
@@ -470,10 +465,10 @@ function way_function()
 	local barrier = Find("barrier")
 	if barrier ~= "" then
 
-		if IsClosed() then
-			Layer("golf", true)
+		if IsClosed() then -- Find edgecases where this does not hold up.
+			Layer("golf_areas", true)
 		else
-			Layer("golf", false)
+			Layer("golf_lines", false)
 		end
 		Attribute("barrier", barrier)
 
@@ -494,7 +489,7 @@ function way_function()
 	-- Buildings
 	local building = Find("building")
 	if building ~= "" then
-		Layer("golf", true)
+		Layer("golf_areas", true)
 		Attribute("building", building)
 		-- Architect:
 		get_architect()
@@ -507,17 +502,9 @@ function way_function()
 	-- TODO fix the new 2019 cart path schema to cover it all: https://wiki.openstreetmap.org/wiki/Key:golf_cart
 	local highway = Find("highway")
 	if highway ~= "" then
-		Layer("golf", false)
-		if highway == "unclassified" or highway == "residential" then
-			highway = "minor"
-		end
+		Layer("golf_lines", false)
 		Attribute("highway", highway)
-		-- ...and road names
-		local name = Find("name")
-		if name ~= "" then
-			Layer("golf", false)
-			Attribute("name", name)
-		end
+
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 	end
@@ -526,7 +513,7 @@ function way_function()
 
 	local area_highway = Find("area:highway")
 	if area_highway ~= "" then
-		Layer("golf", true)
+		Layer("golf_areas", true)
 		Attribute("area_highway", area_highway)
 		local surface = Find("surface")
 		if surface ~= "" then
@@ -540,9 +527,9 @@ function way_function()
 	local man_made = Find("man_made")
 	if man_made ~= "" then
 		if IsClosed() then
-			Layer("golf", true)
+			Layer("golf_areas", true)
 		else
-			Layer("golf", false)
+			Layer("golf_lines", false)
 		end
 		Attribute("man_made", man_made)
 		get_architect()
@@ -550,11 +537,10 @@ function way_function()
 		general_attributes()
 	end
 
-
 	-- Rivers
 	local waterway = Find("waterway")
 	if waterway == "stream" or waterway == "river" or waterway == "canal" then -- Is this to restrictive? Maybe more?
-		Layer("golf", false)
+		Layer("golf_lines", false)
 		Attribute("waterway", waterway)
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
@@ -563,7 +549,7 @@ function way_function()
 	-- Natural-tags: 
 	local natural = Find("natural")
 	if natural == "water" then -- Lakes and other water polygons
-		Layer("golf", true)
+		Layer("golf_areas", true)
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
 		if Find("water") == "river" then
@@ -572,7 +558,7 @@ function way_function()
 			Attribute("water", "lake")
 		end
 	elseif natural == "tree_row" then
-		Layer("golf", false)
+		Layer("golf_lines", false)
 		Attribute("natural", "tree_row")
 		-- "General" common "extra" attributes between nodes & ways/areas:
 		general_attributes()
@@ -585,12 +571,12 @@ function way_function()
 		if leaf_type ~= "" then
 			Attribute("leaf_type", leaf_type)
 		end
-	elseif natural ~= "" then --import all natur=* tags to cover other, bushes waste areas etc?
-		if IsClosed() then -- tODO will multiPolygons be covered by this?
-			Layer("golf", true)
+	elseif natural ~= "" then --import all natural=* tags to cover other, bushes waste areas etc.
+		if IsClosed() then -- TODO will multiPolygons be covered by this?
+			Layer("golf_areas", true)
 			Attribute("natural", natural)
 		else
-			Layer("golf", false)
+			Layer("golf_lines", false)
 			Attribute("natural", natural)
 		end
 		-- "General" common "extra" attributes between nodes & ways/areas:
@@ -599,15 +585,16 @@ function way_function()
 	end
 
 	-- Ways and areas to go to a "other" layer:
+	-- Features which can be inside of a golf course but is not related directly to golf.
 
 	-- Tourisms nodes, 
 	-- Mainly for Campsites/huts which some golf clubs have inside of their facilities:
 	local tourism = Find("tourism")
 	if tourism ~= "" then
 		if IsClosed() then
-			Layer("other", true)
+			Layer("other_areas", true)
 		else
-			Layer("other", false)
+			Layer("other_lines", false)
 		end
 		Attribute("tourism", tourism)
 		-- "General" common "extra" attributes between nodes & ways/areas:

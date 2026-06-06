@@ -6,27 +6,26 @@ golfTiles is an open source project aiming to develop a vector tile Schema and M
 > **This project is in active development.** Schema may be incomplete, or change without notice. 0.1 will have a simple demo with the styled tiles. Discussions are welcome!
 
 
-# Background
+## Background
 I got interested in OpenStreetMap just because I was in the lookout for tools to create course guides for my local Golf Club. I found the project that is OpenStreetMap during the summer of 2024. I also found that previous work have been done in documenting a tagging schema for golf features in OpenStreetMap during the years: [OpenStreetMap wiki: Tag:leisure=golf_course](https://wiki.openstreetmap.org/wiki/Tag:leisure%3Dgolf_course)
 
 I have though about generating vector tiles for showing of the modern capabilities in golf-apps ever since. I have seen so many golf centric apps which just uses OpenStreetMap Carto, which apart from it being raster tiles, cannot visualize the full breath of golf course mapping in the OSM data. Leveraging modern technology such as vector tiles is the way to go. 
 
 After JW started building the tool [Fairwaymapper](https://www.fairwaymapper.com/map). [Thread on the OpenStreetMap Community Forum about FairwayMapper.](https://community.openstreetmap.org/t/fairwaymapper-introducing-golfers-to-mapping/142814) I starting with gathering feedback and trying to solve the biggest problems in documented tagging of golf course facilities on the OpenStreetMap wiki. The most crucial problem to solve would be how we would represent multiple courses on facilities with 2+ courses. The best proposal we found was using a route=golf relations which would allow one to create vector tiles with data which could be used to animate each hole in one particular course, such as FairwayMappers 3D viewer does. Seeing that the project fairwaymapper went well I got inspired.
 
-Many applications could then use these tiles in free and open source golf apps.
-
-It will be interesting to document and estimate how much memory, compute and storage it will take to process all the golf data in the osm database.
-
-# Goals:
+## Goals:
 The plan is to develop:
 
 - A Vector schema for golf features on zoom 14+.
 - A Maplibre GL Style for Maplibre GL JS for zoom 14+ 
-- A collection of scripts and instructions how to generate your own golf centric golf tiles for extracts of OpenStreetMap data on  features which can be found inside of a (multi)polygons that is leisure=golf_course.
+- A collection of scripts and instructions how to generate your own golf centric golf tiles for extracts of OpenStreetMap data on features which can be found inside of a (multi)polygons that is leisure=golf_course.
 - (Maybe depending on the cost) host the PMtiles on a Cloudflare R2 S3 bucket through the [golftiles.org](https://golftiles.org/) domain. 
 
 My initial plan is to produce PMtiles to avoid having to run a tile server to reduce cost for the initial step. When a style and almost complete vector schema is in place, we can then move on to create a dynamic tile server to serve at least daily updated tiles to encourage mappers.
 
+Many applications could then use these tiles in free and open source golf apps.
+
+It will be interesting to document and estimate how much memory, compute and storage it will take to process all the golf data in the osm database.
 ---
 title: Plan for one-shot generating the PMtiles:
 ---
@@ -41,14 +40,14 @@ click tilemaker "https://github.com/systemed/tilemaker"
 click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
 ```
 
-## Development diary:
+### Development diary:
 See [docs/diary.md](docs/diary.md).
 
 
-# Requirements
+### Requirements
 Same as [Tilemaker](https://github.com/systemed/tilemaker#installing) and osmium-tool except it explicit requires Lua 5.3+ for the use of ```math.tointeger(value)```
 
-# How to run the osmium-tool + tilemaker script:
+## How to run the osmium-tool + tilemaker script:
 
 1. Install [Osmium-tool](https://osmcode.org/osmium-tool/). 
 2. Tilemaker is added as a submodule to this repository. Run ```git submodule update --init``` to download the submodule. Build tilemaker from source [tilemaker/README.md](tilemaker/README.md). 
@@ -72,48 +71,55 @@ I will try to contact the following when I have a 1.0 release of some PMTiles an
 More suggestions welcome!
 
 
-# Project Structure
+## Project Structure
 ```
 golfTiles/
 ├── custom-tilemaker/          
-│   ├── config.json/           # tilemaker config file, defining layers and metadata.
-│   └── process.lua/           # Process file which decides what should be included in the tiles in what layers and what vector attributes should be written to the features(Schema)
-├── data/                      # Folder to place your extracts to generate tiles on.
+│   ├── config.json            # tilemaker config file, defining source-layers and metadata.
+│   └── process.lua            # Process file which decides what should be included in the tiles in what layers and what vector attributes should be written to the features(Schema)
+├── data/                      # Folder to place your .pbf extracts to generate tiles on.
 │   └── processed/             # Temporary folder used by the run_all.sh script for osmium-tool.
 ├── docs/                      # Documentation.
+│   ├── samples/               # folder for samples to be downloaded by interested parties and used by the demo.
+│   ├── styles/                # mirrors the styles/ folder, to be use on the github pages due to CORS
+│   ├── CONTRIBUTING.md        # Contributing information.
+│   ├── diary.md               # Some development diary documenting the early process.
+│   └── index.html             # The page for github pages.
 ├── openfreemap-styles/        # Git Submodule of openfreemap-styles using the OpenMapTiles schema.
-├── samples/                   # Some example .pmtiles
 ├── store/                     # Folder to be used as swapspace for tilemaker. TBD.
-├── styles/                    # Contains the maplibre GL Styles golfTilesStyle.json 
+├── styles/                    # Contains the maplibre GL Styles golfTilesStyle.json, 
 │   ├── golfTilesStyle.json    # Main golfTilesStyle.json using the golfTiles schema.
 │   └── Maputnik.sh            # Script to get maputnik up and running, see instructions in [CONTRIBUTING.md](docs/CONTRIBUTING.md) 
 ├── tilemaker                  # Git Submodule of tilemaker
+├── index.html                 # simple page for the golftiles.org website.
 └── run_all.sh                 # Main script to get generate .pmtiles.
 ```
 
-# Future technical development to solve the limitation using tileMaker
+## Future technical development to solve the limitation using tileMaker
 In the future one could maybe use a "dynamic" tile generator server such as:
 - osm2psql 
 - imposm3 
 - Martin. 
 To be able to do incremental updates, but this would be more complex and require server infrastructure. https://github.com/HuggeK/golfTiles/issues/21 Thats where grants comes into the picture.
 
-- Other future endeavors could also be to explore the new [MapLibre Tile (MLT)](https://github.com/maplibre/maplibre-tile-spec) to encode the DEM data from [Mapterhorn](https://mapterhorn.com/) directly into the tiles. 
+- Other future endeavors could also be to explore the new [MapLibre Tile (MLT)](https://github.com/maplibre/maplibre-tile-spec) to encode the DEM data from [Mapterhorn](https://mapterhorn.com/) directly into the tiles. https://github.com/HuggeK/golfTiles/issues/25
 
-# Contributing
-I would advise to wait until a first 0.1 release has been released until beginning to help, due to the schema can rapidly change before a style has been developed. See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
+## Contributing
+I would advise to wait until a first 0.1 release has been released until beginning to help on the schema and style itself, due to the schema can rapidly change before a style has been developed. See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for guidelines.
 
 Especial help wanted on the following areas:
 - [ ] Improving the Maplibre GL style. 
 - [ ] Write a basic course viewer using some web framework together with Maplibre GL JS as a demo, only consuming data from the tiles themselves. Especially interesting would be to be able to chose as particular course and animate through each hole. https://github.com/HuggeK/golfTiles/issues/20
 - [ ] Use a dynamic tile server instead of tilemaker. https://github.com/HuggeK/golfTiles/issues/21
 
+You can also check the issues on github with the labels: [Help wanted](https://github.com/HuggeK/golfTiles/issues?q=state%3Aopen%20label%3A%22help%20wanted%22), [OSM wiki Improvements](https://github.com/HuggeK/golfTiles/issues?q=state%3Aopen%20label%3A%22OSM%20wiki%20improvements%22) and [good first issue](https://github.com/HuggeK/golfTiles/issues?q=state%3Aopen%20label%3A%22good%20first%20issue%22).
 
-# Attribution:
-Using the code and style should be attributed to golfTiles. Tiles generated by the schema is attributed to "[golftiles.org](https://golftiles.org/). OpenStreetMap contributors". Remember to link to [openstreetmap.org/copyright](https://openstreetmap.org/copyright). Note that the ODbL still apply for OpenStreetMap data, always give the proper attribution where you display the tiles.
+
+## Attribution:
+Using the code and style should be attributed to golfTiles. Tiles generated by the schema is attributed to "Schema and style [golftiles.org](https://golftiles.org/)" or "Schema and style [golfTiles](https://github.com/HuggeK/golfTiles)" + "OpenStreetMap contributors". Remember to link to [openstreetmap.org/copyright](https://openstreetmap.org/copyright). Note that the ODbL still apply for OpenStreetMap data, always give the proper attribution where you display the tiles.
 
 # License:
-The script to run the commands, process.lua and style is licensed under [GPL-3.0 license](LICENSE). Note that the GPL allows you to use it on your own server(SaaS or ASP loophole) and then generate tiles to use in your commercial application. 
+The script to run the commands, process.lua and style is licensed under [GPL-3.0 license](LICENSE). Note that the GPL allows you to use it on your own server(SaaS or ASP loophole) and then generate tiles to use in your commercial application. Full licenSe in [LICENSE](LICENSE). 
 
 ### Generated PMtiles:
 Generated PMtiles is licensed under the ODbL and [CC BY](https://creativecommons.org/licenses/by/4.0/deed.en) for attribution to the golfTiles project.
