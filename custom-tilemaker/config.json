@@ -16,7 +16,7 @@
 		"high_resolution": true,
 		"name": "Tilemaker golfTiles schema",
 		"version": "0.1",
-		"description": "Tiles for features inside of golf_courses ",
+		"description": "Tiles for features inside of golf_course facilities",
 		"compress": "gzip"
 		},
 		"metadata": {

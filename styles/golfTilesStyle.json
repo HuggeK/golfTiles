@@ -14,6 +14,15 @@
     },
     "layers": [
         {
+            "id": "facilities_base_layer",
+            "source": "golfTiles_source",
+            "source-layer": "facilities",
+            "type": "fill",
+            "paint": {
+                "fill-color": "#51aa60"
+            }
+        }, 
+        {
             "id": "ranges",
             "source": "golfTiles_source",
             "source-layer": "golf_areas",
@@ -24,6 +33,25 @@
             ],
             "paint": {
                 "fill-color": "#6eb438"
+            }
+        },
+        {
+            "id": "ranges_text_on_borders",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "driving_range"]
+            ],
+            "type": "symbol",
+            "layout": {
+                "text-field": "Driving Range",
+                "text-font": ["Open Sans Regular"],
+                "text-size": 14,
+                "text-variable-anchor": ["top", "bottom", "center", "left", "right"]
+            },
+            "paint": {
+                "text-color": "#000000"
             }
         },
         {
@@ -79,17 +107,42 @@
             }
         },
         {
-            "id": "tees_borders",
+            "id": "tees_color_borders",
             "source": "golfTiles_source",
             "source-layer": "golf_areas",
             "type": "line",
-            "filter": ["has", "tee"],
+            "filter": [
+                    "==",
+                    ["typeof", ["get", "tee"]],
+                    "string"
+                ],
             "paint": {
                 "line-color": [
                     "coalesce",
                     ["get", "tee"],
                     "#000000"
                 ]
+            }
+        },
+        {
+            "id": "tees_numeric_borders",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "symbol",
+            "filter": [
+                "==",
+                ["typeof", ["get", "tee"]],
+                "number"
+            ],
+            "layout": {
+                "text-field": ["to-string", ["get", "tee"]],
+                "text-font": ["Open Sans Regular"],
+                "text-size": 14,
+                "symbol-placement": "line",
+                "symbol-spacing": 250
+            },
+            "paint": {
+                "text-color": "#223631"
             }
         },
         {
@@ -128,8 +181,26 @@
                 ["==", ["get", "natural"], "tree"]
             ],
             "paint": {
-                "circle-color": "#1a6b3c"
-                
+                "circle-color": "#1a6b3c",
+                "circle-radius": [
+                    "interpolate",
+                    ["linear"],
+                    ["zoom"],
+                    12, 1,
+                    13, 3,
+                    20, 4
+                ]
+            }
+        },
+        {
+            "id": "facility_borders",
+            "source": "golfTiles_source",
+            "source-layer": "facilities",
+            "type": "line",
+            "paint": {
+                "line-color": "#223631",
+                "line-width": 2,
+                "line-opacity": 0.8
             }
         },
         {
@@ -208,21 +279,62 @@
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    10, 2,
-                    15, 2,
-                    20, 2
+                    12, 1,
+                    13, 2,
+                    20, 3
                 ]
             }
         },
         {
-            "id": "facility_borders",
+            "id": "golf_carthpath",
             "source": "golfTiles_source",
-            "source-layer": "facilities",
+            "source-layer": "golf_lines",
             "type": "line",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "cartpath"]
+            ],
             "paint": {
-                "line-color": "#223631",
-                "line-width": 2,
-                "line-opacity": 0.8
+                "line-color": "#fa8173"
+            }
+        },
+        {
+            "id": "golf_path",
+            "source": "golfTiles_source",
+            "source-layer": "golf_lines",
+            "type": "line",
+            "filter": [
+                "all",
+                ["==", ["get", "golf"], "hole"]
+            ],
+            "paint": {
+                "line-color": "#e47569"
+            }
+        },
+        {
+            "id": "area:highway",
+            "source": "golfTiles_source",
+            "source-layer": "golf_areas",
+            "type": "fill",
+            "filter": [
+                "has",
+                "area:highway"
+            ],
+            "paint": {
+                "fill-color": "#e6e6e6"
+            }
+        },
+        {
+            "id": "highway",
+            "source": "golfTiles_source",
+            "source-layer": "golf_lines",
+            "type": "line",
+            "filter": [
+                "has",
+                "highway"
+            ],
+            "paint": {
+                "line-color": "#ffffff"
             }
         },
         {
@@ -242,7 +354,7 @@
             }
         },
         {
-            "id": "facility_text_midpoints",
+            "id": "facility_text_center",
             "source": "golfTiles_source",
             "source-layer": "facilities",
             "type": "symbol",
@@ -250,7 +362,7 @@
                 "text-field": ["get", "name"],
                 "text-font": ["Open Sans Regular"],
                 "text-size": 14,
-                "text-variable-anchor": ["center", "top", "bottom", "left", "right"]
+                "text-variable-anchor": ["bottom", "center", "top", "left", "right"]
             },
             "paint": {
                 "text-color": "#000000"
