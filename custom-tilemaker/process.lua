@@ -121,6 +121,19 @@ local function set_AttributeInteger_or_Attribute(attributenkey, value)
 	end
 end
 
+-- Function to convert a name of a course into a hue. Uses FNV-1a
+-- Requires lua 5.3 to be able to use the bitwise XOR tilde ~
+local function string_to_hue(str)
+
+    local hash = 2166136261 -- FNV offset basis
+    for i = 1, #str do
+        hash = hash ~ string.byte(str, i)
+        hash = (hash * 16777619) % 2^32
+    end
+    return hash % 360 -- The hue is a value in between 0-360.
+
+end
+
 
 -- Nodes will only be processed if one of these keys is present. This reduces memory drastically as stated by the documentation.
 node_keys = { "golf", "tee", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
@@ -396,6 +409,10 @@ function way_function()
 			-- Still sets the course info from the golf=holes even if no route=golf tags is present.
 			if golf_course_name ~= "" and not set_golf_course_name then
 				Attribute("golf:course:name", golf_course_name) -- Name of the course this hole belongs to.
+
+				AttributeInteger("course_name_hash_hue", string_to_hue(golf_course_name))
+				-- Run a "hash" function over the name here to calculate a hue for 
+				-- the Maplibre GL style to use for golf=hole lines and other coloring to to lack of proper scripting support in the style itself.
 			end
 			if golf_course ~= "" and not set_golf_course then
 				Attribute("golf:course", golf_course)
@@ -539,7 +556,7 @@ function way_function()
 
 	-- Rivers
 	local waterway = Find("waterway")
-	if waterway == "stream" or waterway == "river" or waterway == "canal" then -- Is this to restrictive? Maybe more?
+	if waterway ~= "" then
 		Layer("golf_lines", false)
 		Attribute("waterway", waterway)
 		-- "General" common "extra" attributes between nodes & ways/areas:
