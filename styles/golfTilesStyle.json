@@ -317,8 +317,8 @@
             "paint": {
                 "line-color": [
                     "case",
-                    ["has", "course_name_hash_hue"],
-                    ["hsl", ["get", "course_name_hash_hue"], 70, 50],
+                    ["has", "course_name_color"],
+                    ["get", "course_name_color"],
                     "#cccccc"
                 ]
             }
