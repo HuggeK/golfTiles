@@ -31,10 +31,11 @@ title: Plan for one-shot generating the PMtiles:
 ---
 ```mermaid
 flowchart LR
-   download(Download one or more extracts of OpenStreetMap data) --> osmium-sort@{shape: docs, label:"Use osmium sort to sort all files inside of data/"} --> osmium-merge@{shape: docs, label:"Use osmium-merge to combine the extracts"} --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons) --> osmiumGeographicExtract(Run osmium-extract on the original extract, filtering to only cut out the objects inside of the leisure=golf_course polygons from previous step.) --> tilemaker(Use the combined osm.obf extract to generate PMTiles using tileMaker) -. Optionally .-> upload[(Upload the PMTiles using protomaps/go-pmtiles to Cloudflare R2 store or web host supporting CORS)]
+   download(Download one or more extracts of OpenStreetMap data) --> osmium-sort@{shape: docs, label:"Use osmium sort to sort all files inside of data/"} --> osmium-merge@{shape: docs, label:"Use osmium-merge to combine the extracts"} --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons) --> osmiumGeographicExtract(Run osmium-extract on the original extract, filtering to only cut out the objects inside of the leisure=golf_course polygons from previous step.) --> osmiumRenumber(Use osmium renumber to give the extract dense, sequential IDs so tilemaker can run with --compact.) --> tilemaker(Use the combined osm.obf extract to generate PMTiles using tileMaker with --compact) -. Optionally .-> upload[(Upload the PMTiles using protomaps/go-pmtiles to Cloudflare R2 store or web host supporting CORS)]
 click download "https://switch2osm.org/serving-tiles/#System-requirements"
 click tagfilter "https://docs.osmcode.org/osmium/latest/osmium-tags-filter.html"
 click osmiumGeographicExtract "https://docs.osmcode.org/osmium/latest/osmium-extract.html"
+click osmiumRenumber "https://docs.osmcode.org/osmium/latest/osmium-renumber.html"
 click osmium-merge "https://docs.osmcode.org/osmium/latest/osmium-merge.html"
 click tilemaker "https://github.com/systemed/tilemaker"
 click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
