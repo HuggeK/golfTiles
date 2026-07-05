@@ -50,12 +50,16 @@ else
   cp data/processed/extract.osm.pbf data/processed/extract.complete.osm.pbf
 fi
 
-# Maybe run osmium renumber here to be able to run tilemaker with --compact.
+# Renumber the extract so object IDs are dense and sequential (nodes/ways/relations each start at 1).
+# This is a prerequisite for tilemaker's --compact node store, and it shrinks the file.
+# The index is kept in RAM (no -i): the golf-course extract is a small subset even of a planet dump.
+# If you ever renumber IDs consistently across several files, add -i <dir> pointing at an empty directory.
+osmium renumber -O --output=data/processed/renumbered.osm.pbf data/processed/extract.complete.osm.pbf
 
-# Execute tilemaker. 
+# Execute tilemaker.
 # --shard-stores:  Group temporary storage by area. Reduces RAM usage on large files (e.g. whole planet) but runs slower.
-# maybe use --compact?
+# --compact: Use the smaller/faster node store. Only valid because the input above was renumbered with osmium renumber.
 
-#tilemaker --input data/processed/extract.complete.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --store store/ --verbose --shard-stores # TODO is to fix stores.
-tilemaker --input data/processed/extract.complete.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --shard-stores # add --verbose to debug proccesss.lua.
+#tilemaker --input data/processed/renumbered.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --store store/ --verbose --shard-stores --compact # TODO is to fix stores.
+tilemaker --input data/processed/renumbered.osm.pbf --output golfTiles.pmtiles --config custom-tilemaker/config.json --process custom-tilemaker/process.lua --shard-stores --compact # add --verbose to debug proccesss.lua.
 # You can feed tilemaker with multiple .pbf files - maybe split it up for whole world? 

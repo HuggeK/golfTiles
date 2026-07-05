@@ -31,10 +31,11 @@ title: Plan for one-shot generating the PMtiles:
 ---
 ```mermaid
 flowchart LR
-   download(Download one or more extracts of OpenStreetMap data) --> osmium-sort@{shape: docs, label:"Use osmium sort to sort all files inside of data/"} --> osmium-merge@{shape: docs, label:"Use osmium-merge to combine the extracts"} --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons) --> osmiumGeographicExtract(Run osmium-extract on the original extract, filtering to only cut out the objects inside of the leisure=golf_course polygons from previous step.) --> tilemaker(Use the combined osm.obf extract to generate PMTiles using tileMaker) -. Optionally .-> upload[(Upload the PMTiles using protomaps/go-pmtiles to Cloudflare R2 store or web host supporting CORS)]
+   download(Download one or more extracts of OpenStreetMap data) --> osmium-sort@{shape: docs, label:"Use osmium sort to sort all files inside of data/"} --> osmium-merge@{shape: docs, label:"Use osmium-merge to combine the extracts"} --> tagfilter(Use Osmium tag filter to get all golf courses multipolygons and polygons) --> osmiumGeographicExtract(Run osmium-extract on the original extract, filtering to only cut out the objects inside of the leisure=golf_course polygons from previous step.) --> osmiumRenumber(Use osmium renumber to give the extract dense, sequential IDs so tilemaker can run with --compact.) --> tilemaker(Use the combined osm.obf extract to generate PMTiles using tileMaker with --compact) -. Optionally .-> upload[(Upload the PMTiles using protomaps/go-pmtiles to Cloudflare R2 store or web host supporting CORS)]
 click download "https://switch2osm.org/serving-tiles/#System-requirements"
 click tagfilter "https://docs.osmcode.org/osmium/latest/osmium-tags-filter.html"
 click osmiumGeographicExtract "https://docs.osmcode.org/osmium/latest/osmium-extract.html"
+click osmiumRenumber "https://docs.osmcode.org/osmium/latest/osmium-renumber.html"
 click osmium-merge "https://docs.osmcode.org/osmium/latest/osmium-merge.html"
 click tilemaker "https://github.com/systemed/tilemaker"
 click upload "https://docs.protomaps.com/pmtiles/cloud-storage"
@@ -59,6 +60,27 @@ Then run:
 - run_all.sh 
    - Tilemaker is using [custom-tilemaker/config.json](custom-tilemaker/config.json) and [custom-tilemaker/process.lua](custom-tilemaker/process.lua) as parameters. The script is using the store directory as swapspace, remove it if you have enough RAM. 
 - You should now have your ```golfTiles.pmtiles``` file in the root of the project which you can serve with any web server which support [HTTP Range Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Range_requests). You can inspect the PMtiles at https://pmtiles.io/. More information in the Protomaps Docs regarding [Cloud Storage for PMtiles](https://docs.protomaps.com/pmtiles/cloud-storage).
+
+## How to run with Docker (alternative):
+
+If you would rather not install osmium-tool and build tilemaker on your machine, you can run the whole pipeline in a container instead. A ready-made image bundling both tools (built against Lua 5.4, see [Dockerfile](Dockerfile)) is published to the GitHub Container Registry on each release.
+
+1. Download a planet [extract .pbf file(s)](https://switch2osm.org/serving-tiles/#System-requirements) and place it in [data/](data/).
+2. From the root of the [golfTiles/](golfTiles/) repository, run:
+
+```
+docker run --rm -v "${PWD}:/app" ghcr.io/huggek/golftiles:latest
+```
+
+The repository is mounted into the container, so the resulting ```golfTiles.pmtiles``` lands in the root of the project just like the script route above. Works identically with ```podman```. The ```${PWD}``` form works in both bash and PowerShell.
+
+You can also build the image yourself, for example to test changes to the schema:
+
+```
+git submodule update --init
+docker build -t golftiles .
+docker run --rm -v "${PWD}:/app" golftiles
+```
 
 ## Grants and funding
 I registred the domain https://golftiles.org to be able to serve the tiles through the Cloudflare R2 bucket under that domain for the initial PMtiles offering. When we then have something concrete to show grant organisations that this would be something good for the golf community as a whole, we could ask for some money for compute and serve the tiles publicly.
