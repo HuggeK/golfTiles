@@ -4,3 +4,5 @@
 *:Zone.Identifier
 !/docs/samples/*.pmtiles
 !/tests/fixtures/*.pbf
+!/docs/fonts/**/*.pbf
+/_site
