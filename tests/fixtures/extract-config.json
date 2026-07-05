@@ -1,0 +1,7 @@
+{
+    "directory": "tests/fixtures",
+    "extracts": [
+        { "output": "part-emmaboda.osm.pbf", "bbox": [15.52, 56.48, 15.68, 56.58] },
+        { "output": "part-nybro.osm.pbf",    "bbox": [15.82, 56.70, 16.00, 56.80] }
+    ]
+}

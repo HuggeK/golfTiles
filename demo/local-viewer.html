@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>golfTiles PR demo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Maplibre stylesheet: -->
+        <link href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" rel="stylesheet" />
+        <!-- Scripts: -->
+        <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+        <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
+        <style>html, body { margin: 0; height: 100%; } #map { height: 100%; }</style>
+    </head>
+    <body>
+        <div id='map'></div>
+        <script type='module'>
+            // add the PMTiles plugin to the maplibregl global.
+            const protocol = new pmtiles.Protocol();
+            maplibregl.addProtocol('pmtiles', protocol.tile);
+
+            // Resolve bundle-relative paths against wherever this page is served
+            // from, so any localhost port or sub-path works.
+            const tilesUrl = new URL('golfTiles.pmtiles', window.location.href).href;
+            protocol.add(new pmtiles.PMTiles(tilesUrl));
+
+            const style = await (await fetch(new URL('golfTilesStyle.json', window.location.href))).json();
+            // Point every pmtiles source in the PR's style at the bundled tileset,
+            // so the style file itself stays byte-identical to the PR branch.
+            for (const src of Object.values(style.sources)) {
+                if (src.url && src.url.startsWith('pmtiles://')) {
+                    src.url = 'pmtiles://' + tilesUrl;
+                }
+            }
+
+            new maplibregl.Map({
+                container: 'map',
+                style,
+                center: [15.59411, 56.52839], // Emmaboda GK - inside the CI fixture.
+                zoom: 14,
+                hash: true // shareable / reload-safe position.
+            });
+        </script>
+    </body>
+</html>

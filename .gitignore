@@ -3,3 +3,4 @@
 /.vscode
 *:Zone.Identifier
 !/docs/samples/*.pmtiles
+!/tests/fixtures/*.pbf
