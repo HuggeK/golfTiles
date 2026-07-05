@@ -12,6 +12,7 @@
                 "url": "https://tiles.mapterhorn.com/tilejson.json"
             }
     },
+    "glyphs": "https://huggek.github.io/golfTiles/fonts/{fontstack}/{range}.pbf",
     "layers": [
         {
             "id": "Facilities base layer",
@@ -36,13 +37,15 @@
             }
         },
         {
-            "id": "Lakes",
+            "id": "Lakes and rivers",
             "source": "golfTiles_source",
             "source-layer": "golf_areas",
             "type": "fill",
             "filter": [
-                "all",
-                ["==", ["get", "water"], "lake"]
+                "match",
+                ["get", "water"],
+                ["lake", "river"], true,
+                false
             ],
             "paint": {
                 "fill-color": "#184565"
@@ -51,7 +54,7 @@
         {
             "id": "Streams and Rivers",
             "source": "golfTiles_source",
-            "source-layer": "golf_areas",
+            "source-layer": "golf_lines",
             "type": "line",
             "filter": [
                 "has",
@@ -341,11 +344,11 @@
                     "concat",
                     [
                     "case",
-                    ["has", "ref"],
+                    ["has", "hole_number"],
                         [
                             "concat",
                             "Hole ",
-                            ["coalesce", ["get", "ref"], ""],
+                            ["coalesce", ["get", "hole_number"], ""],
                             ". "
                         ],
                     ""
@@ -427,7 +430,7 @@
             "type": "fill",
             "filter": [
                 "has",
-                "area:highway"
+                "area_highway"
             ],
             "paint": {
                 "fill-color": "#e6e6e6"
