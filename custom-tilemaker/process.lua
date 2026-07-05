@@ -121,6 +121,43 @@ local function set_AttributeInteger_or_Attribute(attributenkey, value)
 	end
 end
 
+local function hsl_to_rgb(h, s, l)
+    local c = (1 - math.abs(2*l - 1)) * s
+    local x = c * (1 - math.abs((h / 60) % 2 - 1))
+    local m = l - c/2
+
+    local r, g, b = 0, 0, 0
+
+    if h < 60 then r, g, b = c, x, 0
+    elseif h < 120 then r, g, b = x, c, 0
+    elseif h < 180 then r, g, b = 0, c, x
+    elseif h < 240 then r, g, b = 0, x, c
+    elseif h < 300 then r, g, b = x, 0, c
+    else r, g, b = c, 0, x end
+
+    return
+        math.floor((r + m) * 255),
+        math.floor((g + m) * 255),
+        math.floor((b + m) * 255)
+end
+
+-- Function to convert a name of a course into a color.
+-- Requires lua 5.3 to be able to use the bitwise XOR tilde ~
+local function string_to_color(str)
+
+	--Uses FNV-1a:
+    local hash = 2166136261 -- FNV offset basis
+    for i = 1, #str do
+        hash = hash ~ string.byte(str, i)
+        hash = (hash * 16777619) % 2^32
+    end
+    local hue = hash % 360 -- The hue is a value in between 0-360.
+	local r, g, b = hsl_to_rgb(hue, 0.65, 0.55)
+
+	return string.format("#%02x%02x%02x", r, g, b)
+
+end
+
 
 -- Nodes will only be processed if one of these keys is present. This reduces memory drastically as stated by the documentation.
 node_keys = { "golf", "tee", "natural", "leaf_cycle", "leaf_type", "information", "amenity", "vending",
@@ -396,6 +433,9 @@ function way_function()
 			-- Still sets the course info from the golf=holes even if no route=golf tags is present.
 			if golf_course_name ~= "" and not set_golf_course_name then
 				Attribute("golf:course:name", golf_course_name) -- Name of the course this hole belongs to.
+
+				Attribute("course_name_color", string_to_color(golf_course_name))
+				-- the Maplibre GL style to use for golf=hole lines and other coloring to to lack of proper scripting support in the style itself.
 			end
 			if golf_course ~= "" and not set_golf_course then
 				Attribute("golf:course", golf_course)
@@ -539,7 +579,7 @@ function way_function()
 
 	-- Rivers
 	local waterway = Find("waterway")
-	if waterway == "stream" or waterway == "river" or waterway == "canal" then -- Is this to restrictive? Maybe more?
+	if waterway ~= "" then
 		Layer("golf_lines", false)
 		Attribute("waterway", waterway)
 		-- "General" common "extra" attributes between nodes & ways/areas:
