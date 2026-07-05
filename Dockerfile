@@ -8,8 +8,8 @@
 #   * osmium-tool           - drives the sort / merge / tags-filter / extract steps
 #   * tilemaker (v3.1.0)    - built from the pinned submodule, against Lua 5.4
 #                             (the schema in custom-tilemaker/process.lua uses
-#                             math.tointeger(), which requires Lua 5.3+; 5.4 is
-#                             the latest packaged version and satisfies that)
+#                             math.tointeger(), which requires Lua 5.3+; the
+#                             lua5.4 Ubuntu package satisfies that, as of 2026-07-05)
 #
 # ---------------------------------------------------------------------------
 # Build (run from the repo root; make sure the submodule source is present):
