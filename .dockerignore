@@ -1,0 +1,15 @@
+# Keep the build context small and fast. tilemaker/ is intentionally NOT
+# ignored — its source is needed to compile tilemaker inside the image.
+.git
+.sc
+
+# Large OSM inputs and generated tiles: mounted at run time, never baked in.
+data/*.pbf
+data/**/*.pbf
+data/processed/
+store/
+*.pmtiles
+docs/samples/
+
+# Not needed to build or run the tile pipeline.
+openfreemap-styles/
