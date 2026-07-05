@@ -9,6 +9,26 @@ If you are using LLM´s tools for development/issue-tracking/discussions, please
 
 
 
+# Testing a pull request in your browser: the PR demo bundle
+Every pull request (drafts included) automatically gets a downloadable **demo bundle** built by the "PR demo bundle" GitHub Actions workflow on each push. It lets you test a PR's schema ([custom-tilemaker/process.lua](../custom-tilemaker/process.lua)) and style ([styles/golfTilesStyle.json](../styles/golfTilesStyle.json)) changes in your own browser without installing osmium-tool or tilemaker.
+
+The bundle contains:
+- ```golfTiles.pmtiles``` — tiles freshly built by CI from a small committed test fixture ([tests/fixtures/golf-fixture.osm.pbf](../tests/fixtures/golf-fixture.osm.pbf), the area around Emmaboda GK and Nybro golfklubb).
+- ```golfTilesStyle.json``` — the style exactly as committed on the PR branch.
+- ```index.html``` — a local viewer that opens over Emmaboda GK at zoom 14 and points the style at the bundled tiles automatically.
+- ```README.txt``` — the same instructions in short form.
+
+To use it:
+1. On the PR page go to Checks -> **PR demo bundle** -> Artifacts and download ```golftiles-demo-pr<N>-<sha>``` (you need to be logged in to GitHub).
+2. Unzip it, and from that folder run ```npx http-server -p 8080 .```
+3. Open http://localhost:8080/
+
+Note that the pmtiles library needs HTTP Range Requests, which http-server supports — ```python -m http.server``` does not, and the map will stay blank with it. You can also inspect the ```golfTiles.pmtiles``` file directly with the file picker on https://pmtiles.io/ without any server.
+
+The fixture is committed in the repo, so CI never downloads anything from Geofabrik; refresh the fixture manually with [tests/fixtures/extract-config.json](../tests/fixtures/extract-config.json) if it ever needs newer OSM data. The first CI run after a change to the Dockerfile or the tilemaker submodule recompiles tilemaker (~15–30 min); other runs reuse the GitHub Actions build cache and finish in a few minutes.
+
+
+
 # Set up Maputnik locally in WSL to be able to work on the style:
 Because I have not yet uploaded the example .pmtiles or the stle to a bucket which supports CORS some acrobatics with exposing the required things locally is needed:
 

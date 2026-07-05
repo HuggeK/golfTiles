@@ -1,0 +1,96 @@
+name: PR demo bundle
+
+# Builds the golf tiles from the small committed fixture on every push to any
+# pull request (drafts included) and uploads a demo bundle artifact: the fresh
+# golfTiles.pmtiles + the PR branch's style + a local viewer page. Download it
+# from the PR page (Checks -> PR demo bundle -> Artifacts), unzip, and follow
+# README.txt to test the PR in your own browser.
+
+on:
+  pull_request:
+
+# Cancel superseded runs for the same PR.
+concurrency:
+  group: pr-demo-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  build-demo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45          # first uncached tilemaker compile is the long pole
+    permissions:
+      contents: read             # no write tokens or secrets: safe for fork PRs
+    steps:
+      - name: Checkout (tilemaker submodule needed for the image build)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Same GHA build cache as docker-publish.yml, so the expensive tilemaker
+      # compile layer is shared. Schema/style-only PRs never recompile it: those
+      # files are copied after the compile layer and shadowed by the bind mount.
+      - name: Build golftiles image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: golftiles:pr
+          build-args: JOBS=4
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Validate style JSON parses
+        run: python3 -m json.tool styles/golfTilesStyle.json > /dev/null
+
+      - name: Stage fixture into data/
+        run: cp tests/fixtures/golf-fixture.osm.pbf data/
+
+      # Bind-mount the workspace over /app: run_all.sh reads data/*.pbf and
+      # writes golfTiles.pmtiles to the workspace root, and the PR's
+      # run_all.sh / process.lua / config.json are used as-is.
+      - name: Build tiles from fixture
+        run: docker run --rm -v "$PWD:/app" golftiles:pr
+
+      - name: Validate pmtiles output
+        run: |
+          python3 - <<'EOF'
+          import struct
+          h = open('golfTiles.pmtiles', 'rb').read(127)
+          assert len(h) == 127, 'file shorter than a PMTiles header'
+          assert h[:7] == b'PMTiles', 'bad magic bytes'
+          assert h[7] == 3, f'unexpected spec version {h[7]}'
+          tile_data_len = struct.unpack_from('<Q', h, 64)[0]
+          addressed = struct.unpack_from('<Q', h, 72)[0]
+          assert tile_data_len > 0, 'tile data section is empty'
+          assert addressed > 0, 'zero addressed tiles'
+          print(f'OK: {addressed} addressed tiles, {tile_data_len} bytes of tile data')
+          EOF
+
+      - name: Assemble demo bundle
+        run: |
+          mkdir -p bundle
+          cp golfTiles.pmtiles bundle/
+          cp styles/golfTilesStyle.json bundle/
+          cp demo/local-viewer.html bundle/index.html
+          cp demo/BUNDLE_README.txt bundle/README.txt
+          printf '\nBuilt from PR #%s, commit %s\n' \
+            "${{ github.event.pull_request.number }}" \
+            "${{ github.event.pull_request.head.sha }}" >> bundle/README.txt
+
+      - name: Short SHA for artifact name
+        id: vars
+        env:
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: echo "sha_short=${HEAD_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+      - name: Upload demo bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: golftiles-demo-pr${{ github.event.pull_request.number }}-${{ steps.vars.outputs.sha_short }}
+          path: bundle/
+          retention-days: 14
+          if-no-files-found: error
