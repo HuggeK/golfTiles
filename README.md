@@ -120,8 +120,8 @@ golfTiles/
 
 ## Publishing the demo site
 The GitHub Pages demo (https://huggek.github.io/golfTiles/) is published by the
-[`publish-pages.yml`](.github/workflows/publish-pages.yml) workflow, which runs on every published
-release (or manually from the Actions tab). It assembles the site from the canonical sources — the
+[`publish-pages.yml`](.github/workflows/publish-pages.yml) workflow, which runs on every push to
+main and on every published release (or manually from the Actions tab). It assembles the site from the canonical sources — the
 demo page (`docs/index.html`), the style (`styles/golfTilesStyle.json`, with its pmtiles source URL
 rewritten to the Pages origin since golftiles.org serves no CORS headers), the example tilesets
 (`docs/samples/`) and the self-hosted font glyphs (`docs/fonts/`) — so no copies need to be kept in

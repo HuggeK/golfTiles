@@ -1,8 +1,9 @@
 name: Publish GitHub Pages
 
-# Publishes the demo site to GitHub Pages on each published release (and on
-# manual dispatch). The site is assembled from the canonical sources at build
-# time, so nothing has to be hand-copied into docs/ anymore:
+# Publishes the demo site to GitHub Pages on every push to main and on each
+# published release (and on manual dispatch). The site is assembled from the
+# canonical sources at build time, so nothing has to be hand-copied into
+# docs/ anymore:
 #   - docs/index.html            -> /            (the demo page)
 #   - styles/golfTilesStyle.json -> /styles/     (pmtiles URL rewritten to the
 #                                                 Pages origin: golftiles.org
@@ -14,6 +15,8 @@ name: Publish GitHub Pages
 # (one-time: gh api -X PUT repos/HuggeK/golfTiles/pages -f build_type=workflow).
 
 on:
+  push:
+    branches: [main]
   release:
     types: [published]
   workflow_dispatch:        # allow manual runs from the Actions tab
