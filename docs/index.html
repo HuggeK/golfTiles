@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>golfTiles.org</title>
+        <title>golfTiles</title>
         <meta name="description" content="Free and open-source golf centric vector tiles with custom style for websites and apps, using OpenStreetMap data">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Maplibre stylesheet. Keep the major version pinned: an unpinned
@@ -14,19 +14,19 @@
         <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
     </head>
     <body>
-        <h1>golfTiles.org</h1>
+        <h1>golfTiles</h1>
 
         <p>Link to github repo: <a href="https://github.com/HuggeK/golfTiles">https://github.com/HuggeK/golfTiles</a></p>
 
         <h3>Example PMtiles: </h3>
         <ul>
-            <li><a href="https://huggek.github.io/golfTiles/samples/golfTiles_se_dk_fi.pmtiles" download>samples/golfTiles_se_dk_fi.pmtiles</a></li>
-            <li><a href="https://huggek.github.io/golfTiles/samples/golfTiles_sweden.pmtiles" download>samples/golfTiles_sweden.pmtiles</a></li>
+            <li><a href="samples/golfTiles_se_dk_fi.pmtiles" download>samples/golfTiles_se_dk_fi.pmtiles</a></li>
+            <li><a href="samples/golfTiles_sweden.pmtiles" download>samples/golfTiles_sweden.pmtiles</a></li>
         </ul>
 
         <p>If you want to inspect the tiles themselves I can recommend downloading the samples and use <a href="https://pmtiles.io/">pmtiles.io</a>.</p>
 
-        <p>Domain: <a href="https://golftiles.org">golftiles.org</a></p>
+        <p>This demo is hosted on GitHub Pages: <a href="https://huggek.github.io/golfTiles/">https://huggek.github.io/golfTiles/</a>. Main domain: <a href="https://golftiles.org">golftiles.org</a></p>
 
         <h2>Initial Demo using Maplibre GL JS over Sweden, finland and Denmark: </h2>
         <p>Extract from 260601. Initial position is over course: <a href="https://www.openstreetmap.org/way/101624685">Way: Emmaboda Golfklubb (101624685)</a> </p>
@@ -41,7 +41,9 @@
             const protocol = new pmtiles.Protocol();
             maplibregl.addProtocol('pmtiles', protocol.tile);
 
-            const PMTILES_URL = 'https://huggek.github.io/golfTiles/samples/golfTiles_se_dk_fi.pmtiles'; // will this add source two times? both in style and in new?
+            // Absolute URL matching the one the publishing workflow writes into the
+            // style's source, so the map reuses this pre-registered instance.
+            const PMTILES_URL = new URL('samples/golfTiles_se_dk_fi.pmtiles', location.href).href;
 
             const p = new pmtiles.PMTiles(PMTILES_URL);
 
@@ -52,12 +54,32 @@
                 p.getHeader().then(h => {
                     const map = new maplibregl.Map({
                         container: 'map',
-                        zoom: h.maxZoom - 2, // golfTiles is rendered at max zoom of 14.
+                        zoom: h.maxZoom - 1, // golfTiles is rendered at max zoom of 14.
                         center: [15.59411, 56.52839], //Centers on Emmaboda GK.
-                        style: 'https://huggek.github.io/golfTiles/styles/golfTilesStyle.json'
+                        pitch: 70,
+                        style: 'styles/golfTilesStyle.json',
+                        maxPitch: 85
                     });
+                map.addControl(
+                    new maplibregl.NavigationControl({
+                        visualizePitch: true,
+                        showZoom: true,
+                        showCompass: true
+                    })
+                );
+
+                map.addControl(
+                    new maplibregl.TerrainControl({
+                        source: 'terrainSource',
+                        exaggeration: 1
+                    })
+                );
                 });
         </script>
+
+        <p><small>Map labels are rendered with <a href="https://fonts.google.com/specimen/Open+Sans">Open Sans</a>,
+        © 2020 The Open Sans Project Authors, licensed under the
+        <a href="fonts/OFL.txt">SIL Open Font License 1.1</a>.</small></p>
 
     </body>
 </html>

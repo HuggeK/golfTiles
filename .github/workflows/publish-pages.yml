@@ -1,0 +1,75 @@
+name: Publish GitHub Pages
+
+# Publishes the demo site to GitHub Pages on every push to main and on each
+# published release (and on manual dispatch). The site is assembled from the
+# canonical sources at build time, so nothing has to be hand-copied into
+# docs/ anymore:
+#   - docs/index.html            -> /            (the demo page)
+#   - styles/golfTilesStyle.json -> /styles/     (pmtiles URL rewritten to the
+#                                                 Pages origin: golftiles.org
+#                                                 sends no CORS headers)
+#   - docs/samples/*.pmtiles     -> /samples/    (example tilesets)
+#   - docs/fonts/                -> /fonts/      (self-hosted glyph ranges)
+#
+# Requires the repo's Pages source to be set to "GitHub Actions"
+# (one-time: gh api -X PUT repos/HuggeK/golfTiles/pages -f build_type=workflow).
+
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+  workflow_dispatch:        # allow manual runs from the Actions tab
+
+# Never cancel a deployment in progress; queue instead.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write           # required to deploy to Pages
+      id-token: write        # required by deploy-pages for OIDC verification
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Assemble site
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: |
+          mkdir -p _site/styles _site/samples
+          cp docs/index.html _site/index.html
+          cp docs/samples/*.pmtiles _site/samples/
+          cp -r docs/fonts _site/fonts
+          # The canonical style points its pmtiles source at golftiles.org,
+          # which serves no CORS headers; the Pages copy must fetch tiles from
+          # its own origin. The same applies to glyphs: the canonical style
+          # declares none, so point it at the ranges copied above, otherwise
+          # docs/fonts/ ships for nothing and labels fall back to locally
+          # rendered glyphs. Both rewrites keep styles/golfTilesStyle.json
+          # itself untouched. jq doubles as a JSON validity gate.
+          jq --arg url "pmtiles://${BASE_URL}/samples/golfTiles_se_dk_fi.pmtiles" \
+            --arg glyphs "${BASE_URL}/fonts/{fontstack}/{range}.pbf" \
+            '.sources.golfTiles_source.url = $url | .glyphs = $glyphs' \
+            styles/golfTilesStyle.json > _site/styles/golfTilesStyle.json
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

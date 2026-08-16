@@ -102,12 +102,12 @@ golfTiles/
 │   └── process.lua            # Process file which decides what should be included in the tiles in what layers and what vector attributes should be written to the features(Schema)
 ├── data/                      # Folder to place your .pbf extracts to generate tiles on.
 │   └── processed/             # Temporary folder used by the run_all.sh script for osmium-tool.
-├── docs/                      # Documentation.
+├── docs/                      # Documentation + sources for the GitHub Pages demo site.
+│   ├── fonts/                 # Self-hosted glyph .pbf ranges used by the style's glyphs property.
 │   ├── samples/               # folder for samples to be downloaded by interested parties and used by the demo.
-│   ├── styles/                # mirrors the styles/ folder, to be use on the github pages due to CORS
 │   ├── CONTRIBUTING.md        # Contributing information.
 │   ├── diary.md               # Some development diary documenting the early process.
-│   └── index.html             # The page for github pages.
+│   └── index.html             # The demo page for github pages.
 ├── openfreemap-styles/        # Git Submodule of openfreemap-styles using the OpenMapTiles schema.
 ├── store/                     # Folder to be used as swapspace for tilemaker. TBD.
 ├── styles/                    # Contains the maplibre GL Styles golfTilesStyle.json, 
@@ -117,6 +117,16 @@ golfTiles/
 ├── index.html                 # simple page for the golftiles.org website.
 └── run_all.sh                 # Main script to get generate .pmtiles.
 ```
+
+## Publishing the demo site
+The GitHub Pages demo (https://huggek.github.io/golfTiles/) is published by the
+[`publish-pages.yml`](.github/workflows/publish-pages.yml) workflow, which runs on every push to
+main and on every published release (or manually from the Actions tab). It assembles the site from the canonical sources — the
+demo page (`docs/index.html`), the style (`styles/golfTilesStyle.json`, with its pmtiles source URL
+rewritten to the Pages origin since golftiles.org serves no CORS headers), the example tilesets
+(`docs/samples/`) and the self-hosted font glyphs (`docs/fonts/`) — so no copies need to be kept in
+sync by hand. Longer term, golftiles.org is meant to be the bucket endpoint serving the tiles and
+the style, with the GitHub Pages site acting as the demo page.
 
 ## Future technical development to solve the limitation using tileMaker
 In the future one could maybe use a "dynamic" tile generator server such as:
