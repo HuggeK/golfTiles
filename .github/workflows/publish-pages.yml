@@ -55,9 +55,14 @@ jobs:
           cp -r docs/fonts _site/fonts
           # The canonical style points its pmtiles source at golftiles.org,
           # which serves no CORS headers; the Pages copy must fetch tiles from
-          # its own origin. jq doubles as a JSON validity gate.
+          # its own origin. The same applies to glyphs: the canonical style
+          # declares none, so point it at the ranges copied above, otherwise
+          # docs/fonts/ ships for nothing and labels fall back to locally
+          # rendered glyphs. Both rewrites keep styles/golfTilesStyle.json
+          # itself untouched. jq doubles as a JSON validity gate.
           jq --arg url "pmtiles://${BASE_URL}/samples/golfTiles_se_dk_fi.pmtiles" \
-            '.sources.golfTiles_source.url = $url' \
+            --arg glyphs "${BASE_URL}/fonts/{fontstack}/{range}.pbf" \
+            '.sources.golfTiles_source.url = $url | .glyphs = $glyphs' \
             styles/golfTilesStyle.json > _site/styles/golfTilesStyle.json
 
       - name: Upload Pages artifact

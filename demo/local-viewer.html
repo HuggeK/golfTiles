@@ -5,16 +5,21 @@
         <title>golfTiles PR demo</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Maplibre stylesheet: -->
-        <link href="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.css" rel="stylesheet" />
-        <!-- Scripts: -->
-        <script src="https://unpkg.com/maplibre-gl@5/dist/maplibre-gl.js"></script>
+        <link href="https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.css" rel="stylesheet" />
+        <!-- Scripts. Maplibre v6 is ESM-only, so it is imported in the module
+             script below rather than loaded with a <script src> tag. -->
         <script src="https://unpkg.com/pmtiles@3.2.0/dist/pmtiles.js"></script>
         <style>html, body { margin: 0; height: 100%; } #map { height: 100%; }</style>
     </head>
     <body>
         <div id='map'></div>
         <script type='module'>
-            // add the PMTiles plugin to the maplibregl global.
+            // Maplibre v6 has no default export, so import the whole namespace.
+            // pmtiles still ships a classic bundle and is loaded above; classic
+            // scripts run before deferred module scripts, so the global is ready.
+            import * as maplibregl from 'https://unpkg.com/maplibre-gl@6/dist/maplibre-gl.mjs';
+
+            // add the PMTiles plugin to the maplibregl namespace.
             const protocol = new pmtiles.Protocol();
             maplibregl.addProtocol('pmtiles', protocol.tile);
 
